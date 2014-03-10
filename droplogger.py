@@ -28,11 +28,14 @@ def process_entry(entry):
     if not m: return False
     try:
         new["date"] = dateutil.parser.parse(m.groups()[0])
-    except:
+    except ValueError:
         return False
     k = "title"
     new[k] = m.groups()[1].strip().rsplit('@end',1)[0].strip()
-    newline = lines.pop(0)
+    try:
+        newline = lines.pop(0)
+    except IndexError:
+        newline = False
     while newline:
         m = other_lines_re.match(newline)
         while not m:
@@ -43,7 +46,7 @@ def process_entry(entry):
         new[k] = m.groups()[1].strip().rsplit('@end',1)[0].strip()
         try:
             newline = lines.pop(0)
-        except:
+        except IndexError:
             newline = False
     for k in new.keys():
         if not (bool)(new[k]): del new[k]
@@ -51,39 +54,11 @@ def process_entry(entry):
 
 first_line_re = re.compile("^@begin\s+([^-]+)\s*-\s*(.+)")
 
-if __name__ == "__main__":
-    import importlib,sys
-
-    config = {'output_config':{}}
-    config['input'] = os.path.join(os.path.expanduser('~'),'Dropbox/IFTTT/DropLogger')
-    config['ext'] = 'txt'
-    config['recurse'] = True
-    config['start'] = dateutil.parser.parse('Mar 7 2014')
-    config['end']   = dateutil.parser.parse('Mar 8 2014')
-    config['outputs'] = ["stdout"]
-
-    config['output_config']['stdout'] = {}
-    config['output_config']['stdout']['json_output'] = True
-
-    real_outputs = []
-    for o in config['outputs']:
-        try:
-            real_outputs.append(importlib.import_module("outputs.%s" % o))
-            if o in config['output_config']:
-                for k in config['output_config'][o]:
-                    real_outputs[len(real_outputs)-1].config[k] = config['output_config'][o][k]
-        except:
-            True
-
-    if len(real_outputs) == 0: sys.exit()
-    entries = {}
-
-    files = get_files(config['input'], config['ext'], config['recurse'])
-
+def read_files(path, files, ext, start, end):
     for f in files:
         these_entries = []
-        name = f.rsplit('.'+config['ext'], 1)[0] if (bool)(config['ext']) else f
-        full = os.path.join(config['input'], f)
+        name = f.rsplit('.'+ext, 1)[0] if (bool)(ext) else f
+        full = os.path.join(path, f)
         with open(full) as f:
             line = f.readline()
             while line:
@@ -102,15 +77,61 @@ if __name__ == "__main__":
                         date = m.groups()[0].strip()
                         try:
                             date = dateutil.parser.parse(date)
-                        except:
+                        except ValueError:
                             date = False
-                        if date and config['start'] <= date < config['end']:
+                        if date and start <= date < end:
                             these_entries.append(process_entry(entry))
                 line = f.readline()
         if len(these_entries) == 0: continue
         if not name in entries:
             entries[name] = these_entries
         else: entries[name].extend(these_entries)
+    return entries
+
+if __name__ == "__main__":
+    import importlib,sys,datetime,appdirs,json
+
+    config_dir = appdirs.user_data_dir('DropLogger','DanielRayJones')
+    if not os.path.exists(config_dir): os.mkdir(config_dir)
+    config_file = os.path.join(config_dir, 'config.json')
+    if not os.path.exists(config_file) and not os.path.exists(os.path.join(config_dir, 'config.example.json')):
+        ex_file = open(os.path.join(config_dir, 'config.example.json'), 'w')
+        json.dump({"__Instructions__": "Modify these settings, and save as config.json in " + config_dir
+                   , "path":os.path.join(os.path.expanduser('~'),'Dropbox/IFTTT/DropLogger')
+                   , "ext": "txt"
+                   , "recurse": True
+                   , "outputs": ["stdout"]
+                   , "output_config" : { "stdout": {"json_output": True}}}, ex_file, indent=4)
+        ex_file.close()
+
+    config = {'output_config':{}}
+    config['path'] = os.path.join(os.path.expanduser('~'),'Dropbox/IFTTT/DropLogger')
+    config['ext'] = 'txt'
+    config['recurse'] = True
+    config['start'] = datetime.datetime.combine(datetime.date.today(),datetime.time.min)
+    config['end']   = config['start'] + datetime.timedelta(days=1)
+    config['outputs'] = ["stdout"]
+
+    config['output_config']['stdout'] = {}
+    config['output_config']['stdout']['json_output'] = True
+
+    
+
+    real_outputs = []
+    for o in config['outputs']:
+        try:
+            real_outputs.append(importlib.import_module("outputs.%s" % o))
+            if o in config['output_config']:
+                for k in config['output_config'][o]:
+                    real_outputs[len(real_outputs)-1].config[k] = config['output_config'][o][k]
+        except ImportError:
+            True
+
+    if len(real_outputs) == 0: sys.exit()
+    entries = {}
+
+    files = get_files(config['path'], config['ext'], config['recurse'])
+    entries = read_files(config['path'], files, config['ext'], config['start'], config['end'])
 
     for o in real_outputs:
         o.add_entries(entries)
