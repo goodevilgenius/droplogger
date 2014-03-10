@@ -115,7 +115,21 @@ if __name__ == "__main__":
     config['output_config']['stdout'] = {}
     config['output_config']['stdout']['json_output'] = True
 
-    
+    if os.path.exists(config_file):
+        try:
+            with open(config_file) as f:
+                config_file_values = json.load(f)
+        except ValueError:
+            config_file_values = {}
+        def merge_dicts(a, b):
+            if not isinstance(b, dict):
+                return
+            for k, v in b.iteritems():
+                if k in a and isinstance(a[k], dict):
+                    merge_dicts(a[k], v)
+                else:
+                    a[k] = v
+        merge_dicts(config, config_file_values)
 
     real_outputs = []
     for o in config['outputs']:
