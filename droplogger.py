@@ -38,9 +38,13 @@ def process_entry(entry):
         newline = False
     while newline:
         m = other_lines_re.match(newline)
-        while not m:
+        while not m and newline:
             new[k] += "\n" + newline.strip().rsplit('@end',1)[0].strip()
-            newline = lines.pop(0)
+            try:
+                newline = lines.pop(0)
+            except IndexError:
+                newline = False
+            if newline: m = other_lines_re.match(newline)
         k = m.groups()[0]
         if k == "end": break
         new[k] = m.groups()[1].strip().rsplit('@end',1)[0].strip()
@@ -49,6 +53,7 @@ def process_entry(entry):
         except IndexError:
             newline = False
     for k in new.keys():
+        if isinstance(new[k], str): new[k] = new[k].strip()
         if not (bool)(new[k]): del new[k]
     return new
 
