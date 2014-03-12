@@ -13,7 +13,8 @@ def add_entries(entries):
     db = cl[config['db']]
 
     for t in entries:
+        name = t.replace('/','.')
         for e in entries[t]:
-            thisone = db[t].find_one({"date":e["date"],"title":e["title"]})
-            if thisone is not None: db[t].update(thisone, e)
-            else: db[t].insert(e)
+            thisone = db[name].find_one({"date":e["date"],"title":e["title"]})
+            if thisone is not None: db[name].update(thisone, e)
+            else: db[name].insert(e)
