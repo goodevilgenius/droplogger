@@ -45,6 +45,7 @@ def process_entry(entry):
             except IndexError:
                 newline = False
             if newline: m = other_lines_re.match(newline)
+        if not newline: continue
         k = m.groups()[0]
         if k == "end": break
         new[k] = m.groups()[1].strip().rsplit('@end',1)[0].strip()
