@@ -2,7 +2,8 @@
 
 import os
 import os.path
-import dateutil.parser
+import dateutil
+import dateutil.parser as dp
 import datetime
 import re
 
@@ -27,9 +28,11 @@ def process_entry(entry):
     m = first_line_re.match(lines.pop(0))
     if not m: return False
     try:
-        new["date"] = dateutil.parser.parse(m.groups()[0])
+        new["date"] = dp.parse(m.groups()[0])
     except ValueError:
         return False
+    if new["date"].tzinfo is None:
+        new["date"] = new["date"].replace(tzinfo = dateutil.tz.tzlocal())
     k = "title"
     new[k] = m.groups()[1].strip().rsplit('@end',1)[0].strip()
     try:
@@ -82,9 +85,11 @@ def read_files(path, files, ext, start, end):
                     if m:
                         date = m.groups()[0].strip()
                         try:
-                            date = dateutil.parser.parse(date)
+                            date = dp.parse(date)
                         except ValueError:
                             date = False
+                        if date.tzinfo is None:
+                            date = date.replace(tzinfo = dateutil.tz.tzlocal())
                         if date and start <= date < end:
                             these_entries.append(process_entry(entry))
                 line = f.readline()
@@ -114,7 +119,7 @@ if __name__ == "__main__":
     config['path'] = os.path.join(os.path.expanduser('~'),'Dropbox/IFTTT/DropLogger')
     config['ext'] = 'txt'
     config['recurse'] = True
-    config['start'] = datetime.datetime.combine(datetime.date.today(),datetime.time.min)
+    config['start'] = datetime.datetime.combine(datetime.date.today(),datetime.time.min.replace(tzinfo=dateutil.tz.tzlocal()))
     config['end']   = config['start'] + datetime.timedelta(days=1)
     config['outputs'] = ["stdout"]
 
