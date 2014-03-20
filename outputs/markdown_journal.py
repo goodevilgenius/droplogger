@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import os.path
+import os.path,re
 
 __all__ = ["add_entries"]
 
@@ -8,6 +8,8 @@ config = {"path": os.path.join(os.path.expanduser('~'),'Dropbox/Journal'),
           "filename":"Journal_{}.md","main_header":"Journal for {}",
           "short_date":"%Y-%m-%d","long_date":"%x",
           "date_time":"%c"}
+
+space_re = re.compile('\s+')
 
 def add_entries_helper(entries, key, level, fo):
     if not entries: return
@@ -25,7 +27,7 @@ def add_entries_helper(entries, key, level, fo):
             fo.write(e["date"].strftime(config["date_time"]))
             fo.write(" - ")
             if "url" in e and e["url"] is not None: fo.write('[')
-            fo.write(e["title"])
+            fo.write(space_re.sub(' ', e["title"]))
             if "url" in e and e["url"] is not None: fo.write('](' + e["url"] + ')')
             fo.write("\n")
         fo.write("\n")
