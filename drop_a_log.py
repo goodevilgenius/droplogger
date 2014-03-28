@@ -1,14 +1,32 @@
 #!/usr/bin/python
 
-from droplogger import read_config
+from droplogger import read_config, merge_dicts
 
 def add_entry(name, entry):
 	c = read_config()
-	print(c)
+	path = c['path']
+	print(path)
+	print(name)
+	print(entry)
+
+	return False
 
 def parse_drop_args(args):
-	print(args)
-	return True, True
+	name = args.name
+	entry = {
+		"title": args.title, 
+		"date": args.date
+		}
+	if args.items is not None:
+		if 'title' in args.items: del args.items['title']
+		if 'date' in args.items: del args.items['date']
+		merge_dicts(entry, args.items)
+	if args.json is not None:
+		if 'title' in args.json: del args.json['title']
+		if 'date' in args.json: del args.json['date']
+		merge_dicts(entry, args.json)
+	
+	return name, entry
 
 if __name__ == "__main__":
 	import argparse, re, json

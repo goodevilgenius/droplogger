@@ -100,6 +100,15 @@ def read_files(path, files, ext, start, end):
         else: entries[name].extend(these_entries)
     return entries
 
+def merge_dicts(a, b):
+    if not isinstance(b, dict):
+        return
+    for k, v in b.iteritems():
+        if k in a and isinstance(a[k], dict):
+            merge_dicts(a[k], v)
+        else:
+            a[k] = v
+
 def read_config():
     import appdirs
 
@@ -133,14 +142,6 @@ def read_config():
                 config_file_values = json.load(f)
         except ValueError:
             config_file_values = {}
-        def merge_dicts(a, b):
-            if not isinstance(b, dict):
-                return
-            for k, v in b.iteritems():
-                if k in a and isinstance(a[k], dict):
-                    merge_dicts(a[k], v)
-                else:
-                    a[k] = v
         merge_dicts(config, config_file_values)
 
 
