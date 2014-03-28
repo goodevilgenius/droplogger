@@ -11,18 +11,25 @@ def parse_drop_args(args):
 	return True, True
 
 if __name__ == "__main__":
-	import argparse
+	import argparse, re, json
+	import dateutil.parser as dp
 
 	class AddItemAction(argparse.Action):
+		space_re = re.compile('\s+')
+
 		def __call__(self, parser, namespace, values, option_string=None):
-			setattr(namespace, values[0], values[1])
+			key = self.space_re.sub('', values[0])
+			if key == "": return False
+			if not self.dest in namespace or getattr(namespace, self.dest) is None:
+				setattr(namespace, self.dest, {})
+			getattr(namespace, self.dest)[key] = values[1]
 
 	p = argparse.ArgumentParser()
 	p.add_argument("name", help='The name of the log to which this entry will be written')
 	p.add_argument("title", help='The title of the entry')
-	p.add_argument('--date', '-d', help='Date of the entry, use current if omitted')
-	p.add_argument('--json', '-j', help='Entire entry (minus title and date) as a JSON object')
-	p.add_argument('--item', '-i', nargs=2, action=AddItemAction, metavar=('key','value'), help='Add item with [value] as [key]')
+	p.add_argument('--date', '-d', type=dp.parse, help='Date of the entry, use current if omitted')
+	p.add_argument('--json', '-j', type=json.loads, help='Entire entry (minus title and date) as a JSON object')
+	p.add_argument('--item', '-i', nargs=2, dest='items', action=AddItemAction, metavar=('key','value'), help='Add item with [value] as [key]')
 	
 	name, entry = parse_drop_args(p.parse_args())
 	if entry:
