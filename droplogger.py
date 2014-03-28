@@ -6,6 +6,8 @@ import dateutil
 import dateutil.parser as dp
 import datetime
 import re
+import importlib
+import json
 
 first_line_re = re.compile("^@begin\s+([^-]+)\s*-\s*(.+)")
 
@@ -156,7 +158,7 @@ def read_config():
 	return config
 
 if __name__ == "__main__":
-    import importlib,sys,datetime,json
+    import sys,datetime
 
     config = read_config()
 
