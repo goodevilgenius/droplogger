@@ -8,7 +8,7 @@ def add_entry(name, entry):
 
 def parse_drop_args(args):
 	print(args)
-	return True
+	return True, True
 
 if __name__ == "__main__":
 	import argparse
@@ -18,8 +18,8 @@ if __name__ == "__main__":
 			setattr(namespace, values[0], values[1])
 
 	p = argparse.ArgumentParser()
-	p.add_argument("name", 'The name of the log to which this entry will be written')
-	p.add_argument("title", 'The title of the entry')
+	p.add_argument("name", help='The name of the log to which this entry will be written')
+	p.add_argument("title", help='The title of the entry')
 	p.add_argument('--date', '-d', help='Date of the entry, use current if omitted')
 	p.add_argument('--json', '-j', help='Entire entry (minus title and date) as a JSON object')
 	p.add_argument('--item', '-i', nargs=2, action=AddItemAction, metavar=('key','value'), help='Add item with [value] as [key]')
