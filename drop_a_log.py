@@ -1,12 +1,18 @@
 #!/usr/bin/python
 
+import os.path
 from droplogger import read_config, merge_dicts
 
 def add_entry(name, entry):
 	c = read_config()
 	path = c['path']
-	print(path)
-	print(name)
+
+	f = name
+	if (bool)(c['ext']):
+		f += "." + c['ext']
+
+	full_path = os.path.join(path, f)
+	print(full_path)
 	print(entry)
 
 	return False
