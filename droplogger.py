@@ -7,6 +7,8 @@ import dateutil.parser as dp
 import datetime
 import re
 
+first_line_re = re.compile("^@begin\s+([^-]+)\s*-\s*(.+)")
+
 def get_files(path, ext, recurse):
     r = []
     wext = ("." + ext) if (bool)(ext) else ""
@@ -21,7 +23,6 @@ def get_files(path, ext, recurse):
 
 def process_entry(entry):
     new = {}
-    first_line_re = re.compile("^@begin\s+([^-]+)\s*-\s*(.+)")
     other_lines_re = re.compile("^@([^\s]+)\s*(.*)")
     
     lines = entry.splitlines()
@@ -60,8 +61,6 @@ def process_entry(entry):
         if isinstance(new[k], str): new[k] = new[k].strip()
         if not (bool)(new[k]): del new[k]
     return new
-
-first_line_re = re.compile("^@begin\s+([^-]+)\s*-\s*(.+)")
 
 def read_files(path, files, ext, start, end):
     for f in files:
