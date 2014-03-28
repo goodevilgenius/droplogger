@@ -98,8 +98,8 @@ def read_files(path, files, ext, start, end):
         else: entries[name].extend(these_entries)
     return entries
 
-if __name__ == "__main__":
-    import importlib,sys,datetime,appdirs,json
+def read_config():
+    import appdirs
 
     config_dir = appdirs.user_data_dir('DropLogger','DanielRayJones')
     if not os.path.exists(config_dir): os.mkdir(config_dir)
@@ -141,6 +141,7 @@ if __name__ == "__main__":
                     a[k] = v
         merge_dicts(config, config_file_values)
 
+
     real_outputs = []
     for o in config['outputs']:
         try:
@@ -150,12 +151,20 @@ if __name__ == "__main__":
                     real_outputs[len(real_outputs)-1].config[k] = config['output_config'][o][k]
         except ImportError:
             True
+	config['outputs'] = real_outputs
+	
+	return config
 
-    if len(real_outputs) == 0: sys.exit()
+if __name__ == "__main__":
+    import importlib,sys,datetime,json
+
+    config = read_config()
+
+    if len(config['outputs']) == 0: sys.exit()
     entries = {}
 
     files = get_files(config['path'], config['ext'], config['recurse'])
     entries = read_files(config['path'], files, config['ext'], config['start'], config['end'])
 
-    for o in real_outputs:
+    for o in config['outputs']:
         o.add_entries(entries)
