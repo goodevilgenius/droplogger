@@ -151,9 +151,9 @@ def read_config():
                     real_outputs[len(real_outputs)-1].config[k] = config['output_config'][o][k]
         except ImportError:
             True
-	config['outputs'] = real_outputs
+    config['outputs'] = real_outputs
 	
-	return config
+    return config
 
 if __name__ == "__main__":
     import importlib,sys,datetime,json
