@@ -32,7 +32,7 @@ def parse_drop_args(args):
 		if 'date' in args.json: del args.json['date']
 		merge_dicts(entry, args.json)
 	
-	return name, entry
+	return name, entry if (bool)(entry.title) and (bool)(entry.date) else False
 
 if __name__ == "__main__":
 	import argparse, re, json
