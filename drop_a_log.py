@@ -1,9 +1,12 @@
 #!/usr/bin/python
 
+import copy
 import os.path
+import datetime, dateutil.tz
 from droplogger import read_config, merge_dicts
 
 def add_entry(name, entry):
+	e = copy.deepcopy(entry)
 	c = read_config()
 	path = c['path']
 
@@ -12,10 +15,29 @@ def add_entry(name, entry):
 		f += "." + c['ext']
 
 	full_path = os.path.join(path, f)
-	print(full_path)
-	print(entry)
 
-	return False
+	try:
+		fp = open(full_path, 'a')
+	except IOError:
+		return false
+    
+	fp.write("\n@begin ")
+	fp.write((str)(e['date']))
+	fp.write(' - ')
+	fp.write(e['title'])
+	fp.write("\n")
+	del e['date']
+	del e['title']
+
+	for k in e:
+		fp.write('@' + k + ' ')
+		fp.write((str)(e[k]))
+		fp.write("\n")
+
+	fp.write("@end\n")
+	fp.close()
+
+	return True
 
 def parse_drop_args(args):
 	name = args.name
@@ -31,8 +53,10 @@ def parse_drop_args(args):
 		if 'title' in args.json: del args.json['title']
 		if 'date' in args.json: del args.json['date']
 		merge_dicts(entry, args.json)
-	
-	return name, entry if (bool)(entry.title) and (bool)(entry.date) else False
+
+	if not entry['date']: entry['date'] = datetime.datetime.now(dateutil.tz.tzlocal())
+
+	return name, entry if (bool)(entry['title']) else False
 
 if __name__ == "__main__":
 	import argparse, re, json
