@@ -40,16 +40,16 @@ def process_entry(entry):
         newline = lines.pop(0)
     except IndexError:
         newline = False
-    while newline:
+    while newline or newline == "":
         m = other_lines_re.match(newline)
-        while not m and newline:
+        while not m and (newline or newline == ""):
             new[k] += "\n" + newline.strip().rsplit('@end',1)[0].strip()
             try:
                 newline = lines.pop(0)
             except IndexError:
                 newline = False
-            if newline: m = other_lines_re.match(newline)
-        if not newline: continue
+            if newline or newline == "": m = other_lines_re.match(newline)
+        if not newline and newline != "": continue
         k = m.groups()[0]
         if k == "end": break
         new[k] = m.groups()[1].strip().rsplit('@end',1)[0].strip()
