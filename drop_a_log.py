@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import copy
+import os
 import os.path
 import datetime, dateutil.tz
 from droplogger import read_config, merge_dicts
@@ -17,11 +18,16 @@ def add_entry(name, entry):
 	full_path = os.path.join(path, f)
 
 	try:
-		fp = open(full_path, 'a')
+		fp = open(full_path, 'a+')
 	except IOError:
 		return False
-    
-	fp.write("\n@begin ")
+
+	fp.seek(-1, os.SEEK_END)
+	last = fp.read()
+	if last != '\n':
+		fp.write("\n")
+
+	fp.write("@begin ")
 	fp.write(e['date'].strftime('%B %d, %Y at %I:%M:%S%p %Z'))
 	del e['date']
 	fp.write(' - ')
