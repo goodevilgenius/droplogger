@@ -19,22 +19,27 @@ def add_entry(name, entry):
 	try:
 		fp = open(full_path, 'a')
 	except IOError:
-		return false
+		return False
     
 	fp.write("\n@begin ")
 	fp.write(e['date'].strftime('%B %d, %Y at %I:%M:%S%p %Z'))
+	del e['date']
 	fp.write(' - ')
 	fp.write(e['title'])
-	fp.write("\n")
-	del e['date']
 	del e['title']
 
-	for k in e:
-		fp.write('@' + k + ' ')
-		fp.write((str)(e[k]))
+	if len(e.keys()) > 0:
 		fp.write("\n")
 
-	fp.write("@end\n")
+		for k in e:
+			fp.write('@' + k + ' ')
+			fp.write((str)(e[k]))
+			fp.write("\n")
+
+		fp.write("@end\n")
+	else:
+		fp.write(" @end\n")
+
 	fp.close()
 
 	return True
