@@ -22,7 +22,7 @@ def add_entry(name, entry):
 		return false
     
 	fp.write("\n@begin ")
-	fp.write((str)(e['date']))
+	fp.write(e['date'].strftime('%B %d, %Y at %I:%M:%S%p %Z'))
 	fp.write(' - ')
 	fp.write(e['title'])
 	fp.write("\n")
