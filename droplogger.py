@@ -98,6 +98,13 @@ def read_files(path, files, ext, start, end):
         if not name in entries:
             entries[name] = these_entries
         else: entries[name].extend(these_entries)
+
+    def sort_key(entry):
+        return entry['date']
+
+    for k in entries.keys():
+        entries[k].sort(key=sort_key)
+
     return entries
 
 def merge_dicts(a, b):
@@ -117,12 +124,20 @@ def read_config():
     config_file = os.path.join(config_dir, 'config.json')
     if not os.path.exists(config_file) and not os.path.exists(os.path.join(config_dir, 'config.example.json')):
         ex_file = open(os.path.join(config_dir, 'config.example.json'), 'w')
-        json.dump({"__Instructions__": "Modify these settings, and save as config.json in " + config_dir
-                   , "path":os.path.join(os.path.expanduser('~'),'Dropbox/IFTTT/DropLogger')
-                   , "ext": "txt"
-                   , "recurse": True
-                   , "outputs": ["stdout"]
-                   , "output_config" : { "stdout": {"json_output": False}}}, ex_file, indent=4)
+        ex_config = {"__Instructions__": "Modify these settings, and save as config.json in " + config_dir
+                    , "path":os.path.join(os.path.expanduser('~'),'Dropbox','IFTTT','DropLogger')
+                    , "ext": "txt"
+                    , "recurse": True
+                    , "outputs": ["stdout"]
+                    , "output_config" : {
+                        "stdout": {"json_output": False}
+                        , "markdown_journal":
+                        {"path": os.path.join(os.path.expanduser('~'),'Dropbox','Journal'),
+                        "filename":"Journal_{}.md","main_header":"Journal for {}",
+                        "short_date":"%Y-%m-%d","long_date":"%x",
+                        "date_time":"%c"}
+                        }}
+        json.dump(ex_config, ex_file, indent=4)
         ex_file.close()
 
     config = {'output_config':{}}
