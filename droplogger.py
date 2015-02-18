@@ -74,8 +74,8 @@ def read_files(path, files, ext, start, end):
             while line:
                 if line.startswith('@begin'):
                     entry = line
-                    line = f.readline()
                     if not entry.strip().endswith('@end'):
+                        line = f.readline()
                         while line:
                             if line: entry += line
                             if line and line.strip().endswith('@end'): break
@@ -88,7 +88,7 @@ def read_files(path, files, ext, start, end):
                         try:
                             date = dp.parse(date)
                         except ValueError:
-                            date = False
+                            date = datetime.datetime.fromtimestamp(0)
                         if date.tzinfo is None:
                             date = date.replace(tzinfo = dateutil.tz.tzlocal())
                         if date and start <= date < end:
