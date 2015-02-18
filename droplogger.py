@@ -113,7 +113,7 @@ def read_config():
     import appdirs
 
     config_dir = appdirs.user_data_dir('DropLogger','DanielRayJones')
-    if not os.path.exists(config_dir): os.mkdir(config_dir)
+    if not os.path.exists(config_dir): os.makedirs(config_dir)
     config_file = os.path.join(config_dir, 'config.json')
     if not os.path.exists(config_file) and not os.path.exists(os.path.join(config_dir, 'config.example.json')):
         ex_file = open(os.path.join(config_dir, 'config.example.json'), 'w')
@@ -122,11 +122,11 @@ def read_config():
                    , "ext": "txt"
                    , "recurse": True
                    , "outputs": ["stdout"]
-                   , "output_config" : { "stdout": {"json_output": True}}}, ex_file, indent=4)
+                   , "output_config" : { "stdout": {"json_output": False}}}, ex_file, indent=4)
         ex_file.close()
 
     config = {'output_config':{}}
-    config['path'] = os.path.join(os.path.expanduser('~'),'Dropbox/IFTTT/DropLogger')
+    config['path'] = os.path.join(os.path.expanduser('~'),'Dropbox','IFTTT','DropLogger')
     config['ext'] = 'txt'
     config['recurse'] = True
     config['start'] = datetime.datetime.combine(datetime.date.today(),datetime.time.min.replace(tzinfo=dateutil.tz.tzlocal()))
@@ -134,13 +134,16 @@ def read_config():
     config['outputs'] = ["stdout"]
 
     config['output_config']['stdout'] = {}
-    config['output_config']['stdout']['json_output'] = True
+    config['output_config']['stdout']['json_output'] = False
 
     if os.path.exists(config_file):
         try:
             with open(config_file) as f:
                 config_file_values = json.load(f)
-        except ValueError:
+        except ValueError as e:
+            print("Couldn't read config file: %s" % config_file)
+            print("Using default config values")
+            print(e)
             config_file_values = {}
         merge_dicts(config, config_file_values)
 

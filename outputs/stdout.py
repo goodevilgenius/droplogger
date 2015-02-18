@@ -12,5 +12,13 @@ def add_entries(entries):
             for e in c[t]:
                 e["date"] = (str)(e["date"])
         print(json.dumps(c))
-    else: print(entries)
+    else:
+        for cat,ents in entries.iteritems():
+            print cat
+            print "======="
+            for i in ents:
+                for k,v in i.iteritems():
+                    print("%s: %s" % (k,v))
+                print('')
+            print('')
 

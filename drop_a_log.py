@@ -27,6 +27,7 @@ def add_entry(name, entry):
 	if last != '\n':
 		fp.write("\n")
 
+	fp.seek(0,2)
 	fp.write("@begin ")
 	fp.write(e['date'].strftime('%B %d, %Y at %I:%M:%S%p %Z'))
 	del e['date']
