@@ -29,7 +29,7 @@ def add_entry(name, entry):
 
 	fp.seek(0,2)
 	fp.write("@begin ")
-	fp.write(e['date'].strftime('%B %d, %Y at %I:%M:%S%p %Z'))
+	fp.write(e['date'].strftime('%B %d, %Y at %I:%M:%S%p %z'))
 	del e['date']
 	fp.write(' - ')
 	fp.write(e['title'])
