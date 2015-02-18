@@ -22,8 +22,11 @@ def add_entry(name, entry):
 	except IOError:
 		return False
 
-	fp.seek(-1, os.SEEK_END)
-	last = fp.read()
+	try:
+		fp.seek(-1, os.SEEK_END)
+		last = fp.read()
+	except IOError:
+		last = '\n'
 	if last != '\n':
 		fp.write("\n")
 
