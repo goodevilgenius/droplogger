@@ -9,7 +9,7 @@ import re
 import importlib
 import json
 
-first_line_re = re.compile("^@begin\s+([^-]+)\s*-\s*(.+)")
+first_line_re = re.compile("^@begin\s+(.+)\s+-\s+(.+)")
 
 def get_files(path, ext, recurse):
     r = []
