@@ -147,7 +147,7 @@ def read_config():
                     , "recurse": True
                     , "outputs": ["stdout"]
                     , "output_config" : {
-                        "stdout": {"json_output": False}
+                        "stdout": {"json_output": False,"indent": True}
                         , "markdown_journal":
                         {"path": os.path.join(os.path.expanduser('~'),'Dropbox','Journal'),
                         "filename":"Journal_{}.md","main_header":"Journal for {}",

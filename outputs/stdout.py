@@ -2,7 +2,7 @@
 
 __all__ = ["add_entries"]
 
-config = {"json_output": False}
+config = {"json_output": False, "indent": True}
 
 def add_entries(entries):
     if config['json_output']:
@@ -11,7 +11,8 @@ def add_entries(entries):
         for t in c:
             for e in c[t]:
                 e["date"] = (str)(e["date"])
-        print(json.dumps(c))
+        if config['indent']: print(json.dumps(c, indent=4))
+        else: print(json.dumps(c))
     else:
         for cat,ents in entries.iteritems():
             print cat
