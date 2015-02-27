@@ -26,6 +26,8 @@ def get_files(path, ext, recurse):
 def process_entry(entry):
     new = {}
     other_lines_re = re.compile("^@([^\s]+)\s*(.*)")
+    yaml_bool = re.compile("^(y|Y|yes|Yes|YES|n|N|no|No|NO|true|True|TRUE|false|False|FALSE|on|On|ON|off|Off|OFF)$")
+    yaml_true = re.compile("^(y|Y|yes|Yes|YES|true|True|TRUE|on|On|ON)$")
     
     lines = entry.splitlines()
     m = first_line_re.match(lines.pop(0))
@@ -60,8 +62,23 @@ def process_entry(entry):
         except IndexError:
             newline = False
     for k in new.keys():
-        if isinstance(new[k], str): new[k] = new[k].strip()
-        if not (bool)(new[k]): del new[k]
+        if isinstance(new[k], str):
+            new[k] = new[k].strip()
+            if not (bool)(new[k]):
+                del new[k]
+                continue
+            if yaml_bool.match(new[k]):
+                 new[k] = bool(yaml_true.match(new[k]))
+                 continue
+            try:
+                val = int(new[k])
+                new[k] = val
+            except ValueError:
+                try:
+                    val = float(new[k])
+                    new[k] = val
+                except ValueError:
+                    pass
     return new
 
 def read_files(path, files, ext, start, end):
