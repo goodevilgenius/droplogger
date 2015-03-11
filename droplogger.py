@@ -23,11 +23,42 @@ def get_files(path, ext, recurse):
             r.append(f)
     return r
 
-def process_entry(entry):
-    new = {}
-    other_lines_re = re.compile("^@([^\s]+)\s*(.*)")
+def parse_item(item):
     yaml_bool = re.compile("^(y|Y|yes|Yes|YES|n|N|no|No|NO|true|True|TRUE|false|False|FALSE|on|On|ON|off|Off|OFF)$")
     yaml_true = re.compile("^(y|Y|yes|Yes|YES|true|True|TRUE|on|On|ON)$")
+    yaml_null = re.compile("^(~|null|Null|NULL|none|None|NONE)")
+
+    if isinstance(item, str):
+        item = item.strip()
+        if not (bool)(item):
+            return None
+        if yaml_null.match(item):
+            return None
+        if yaml_bool.match(item):
+            item = bool(yaml_true.match(item))
+            return item
+        try:
+            val = int(item)
+            item = val
+        except ValueError:
+            try:
+                val = float(item)
+                item = val
+            except ValueError:
+                pass
+    return item
+
+def process_entry(entry, lists = None, list_separator = None):
+    new = {}
+    if lists is None:
+        lists = read_config()['lists']
+        if lists is None:
+            lists = ["tags"]
+    if list_separator is None:
+        list_separator = read_config()['list_separator']
+        if list_separator is None:
+            list_separator = ","
+    other_lines_re = re.compile("^@([^\s]+)\s*(.*)")
     
     lines = entry.splitlines()
     m = first_line_re.match(lines.pop(0))
@@ -62,23 +93,21 @@ def process_entry(entry):
         except IndexError:
             newline = False
     for k in new.keys():
-        if isinstance(new[k], str):
-            new[k] = new[k].strip()
-            if not (bool)(new[k]):
+        if k in lists:
+            ar = []
+            for i in new[k].split(list_separator):
+                newi = parse_item(i)
+                if newi is not None:
+                    ar.append(newi)
+            if len(ar) > 0:
+                new[k] = ar
+            else: del new[k]
+        else:
+            newk = parse_item(new[k])
+            if newk is not None:
+                new[k] = newk
+            else:
                 del new[k]
-                continue
-            if yaml_bool.match(new[k]):
-                 new[k] = bool(yaml_true.match(new[k]))
-                 continue
-            try:
-                val = int(new[k])
-                new[k] = val
-            except ValueError:
-                try:
-                    val = float(new[k])
-                    new[k] = val
-                except ValueError:
-                    pass
     return new
 
 def read_files(path, files, ext, start, end):
@@ -142,9 +171,12 @@ def read_config():
     if not os.path.exists(config_file) and not os.path.exists(os.path.join(config_dir, 'config.example.json')):
         ex_file = open(os.path.join(config_dir, 'config.example.json'), 'w')
         ex_config = {"__Instructions__": "Modify these settings, and save as config.json in " + config_dir
+                    , "__lists__": "lists should contain a list of item types to be interpreted as lists"
                     , "path":os.path.join(os.path.expanduser('~'),'Dropbox','IFTTT','DropLogger')
                     , "ext": "txt"
                     , "recurse": True
+                    , "lists": ["tags"]
+                    , "list_separator": ","
                     , "outputs": ["stdout"]
                     , "output_config" : {
                         "stdout": {"json_output": False,"indent": True}
@@ -161,6 +193,8 @@ def read_config():
     config['path'] = os.path.join(os.path.expanduser('~'),'Dropbox','IFTTT','DropLogger')
     config['ext'] = 'txt'
     config['recurse'] = True
+    config['lists'] = ["tags"]
+    config['list_separator'] = ","
     config['start'] = datetime.datetime.combine(datetime.date.today(),datetime.time.min.replace(tzinfo=dateutil.tz.tzlocal()))
     config['end']   = config['start'] + datetime.timedelta(days=1)
     config['outputs'] = ["stdout"]
