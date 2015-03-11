@@ -28,6 +28,7 @@ def add_entry(name, entry):
 	except IOError:
 		last = '\n'
 	if last != '\n':
+		fp.seek(-1, os.SEEK_END)
 		fp.write("\n")
 
 	fp.seek(0,2)
