@@ -1,10 +1,10 @@
 #!/usr/bin/python
 
-import os.path,re
+import os, os.path, re
 
 __all__ = ["add_entries"]
 
-config = {"path": os.path.join(os.path.expanduser('~'),'Dropbox/Journal'),
+config = {"path": os.path.join(os.path.expanduser('~'),'Dropbox','Journal'),
           "filename":"Journal_{}.md","main_header":"Journal for {}",
           "short_date":"%Y-%m-%d","long_date":"%x",
           "date_time":"%c"}
@@ -19,7 +19,7 @@ def add_entries_helper(entries, key, level, fo):
     subs = find_sub_keys(entries, key)
     if not key in entries and len(subs) == 0: return
 
-    fo.write(('#'*level) + ' ' + key)
+    fo.write(('#'*level) + ' ' + key.replace(os.sep,'.'))
     fo.write("\n\n")
     if key in entries:
         for e in entries[key]:
@@ -42,7 +42,7 @@ def find_sub_keys(entries, key):
 
     r = []
     for k in entries:
-        if k.startswith(key + "/"): r.append(k)
+        if k.startswith(key + os.sep): r.append(k)
     return r
 
 def add_entries(entries):
@@ -74,8 +74,8 @@ def add_entries(entries):
 
     for t in c.keys():
         if not t in c: continue
-        if t.count('/') > 0:
-            i = t.index('/')
+        if t.count(os.sep) > 0:
+            i = t.index(os.sep)
             add_entries_helper(c, t[:i], 2, fo)
         add_entries_helper(c, t, 2, fo)
     

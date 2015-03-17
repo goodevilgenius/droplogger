@@ -14,8 +14,9 @@ def add_entries(entries):
         if config['indent']: print(json.dumps(c, indent=4))
         else: print(json.dumps(c))
     else:
+        import os
         for cat,ents in entries.iteritems():
-            print cat
+            print cat.replace(os.sep,'.')
             print "======="
             for i in ents:
                 for k,v in i.iteritems():
