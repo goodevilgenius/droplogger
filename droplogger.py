@@ -69,6 +69,8 @@ def process_entry(entry, lists = None, list_separator = None):
         return False
     if new["date"].tzinfo is None:
         new["date"] = new["date"].replace(tzinfo = dateutil.tz.tzlocal())
+    elif new["date"].tzinfo != dateutil.tz.tzlocal():
+        new["date"] = new["date"].astimezone(dateutil.tz.tzlocal())
     k = "title"
     new[k] = m.groups()[1].strip().rsplit('@end',1)[0].strip()
     try:
