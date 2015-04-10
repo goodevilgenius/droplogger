@@ -45,7 +45,11 @@ def parse_item(item):
                 val = float(item)
                 item = val
             except ValueError:
-                pass
+                try:
+                    val = dp.parse(item)
+                    item = val
+                except ValueError:
+                    pass
     return item
 
 def process_entry(entry, lists = None, list_separator = None):
