@@ -17,6 +17,9 @@ def add_entry(name, entry):
 
 	full_path = os.path.join(path, f)
 
+	if not os.path.isdir(os.path.dirname(full_path)):
+		os.makedirs(os.path.dirname(full_path))
+
 	try:
 		fp = open(full_path, 'a+')
 	except IOError:
