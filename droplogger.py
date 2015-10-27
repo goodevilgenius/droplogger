@@ -48,6 +48,8 @@ def parse_item(item):
                 try:
                     val = dp.parse(item)
                     item = val
+                except TypeError:
+                    pass
                 except ValueError:
                     pass
     return item
@@ -201,6 +203,7 @@ def read_config():
     config['recurse'] = True
     config['lists'] = ["tags"]
     config['list_separator'] = ","
+    # config['start'] = datetime.datetime.combine(datetime.date.today() - datetime.timedelta(days=1),datetime.time.min.replace(tzinfo=dateutil.tz.tzlocal()))
     config['start'] = datetime.datetime.combine(datetime.date.today(),datetime.time.min.replace(tzinfo=dateutil.tz.tzlocal()))
     config['end']   = config['start'] + datetime.timedelta(days=1)
     config['outputs'] = ["stdout"]
