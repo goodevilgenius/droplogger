@@ -85,13 +85,23 @@ The final output is to send each entry to a mongo database.
 
 ### Foursquare
 
-<a href="https://ifttt.com/view_embed_recipe/267058-add-checkins-to-droplogger"
-target = "_blank" class="embed_recipe embed_recipe-l_27"
-id="embed_recipe-267058">
-<img src= 'https://ifttt.com/recipe_embed_img/267058'
-alt="IFTTT Recipe: Add checkins to #DropLogger connects foursquare to dropbox"
-width="370px" style="max-width:100%"/></a><script async type="text/javascript"
-src= "//ifttt.com/assets/embed_recipe.js"></script>
+[IFTTT Recipe: Add Fourquare checkins to #DropLogger](https://ifttt.com/view_embed_recipe/267058-add-checkins-to-droplogger)
 
 **More to come**
 
+## Future enhancements
+
+* Finish this documentation
+* Provide API documentation
+* Create feed module
+	+ Types
+		- RSS
+		- ATOM
+		- JSON
+		- JSONP
+	+ This would probably not be an additional output, as it would likely have
+      very different needs.
+	+ Perhaps provide options for uploading feeds somewhere, although this may
+      be better served by another application (grunt, e.g.)
+* Add options to run droplogger on arbitrary time periods (currently runs over
+  the past day)
