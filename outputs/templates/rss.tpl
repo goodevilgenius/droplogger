@@ -9,6 +9,7 @@
   <item>
 	<title>{{ entry.title }}</title>
 	<pubDate>{{ entry.date.strftime('%s')|float|formatdate }}</pubDate>
+	{% if entry.url %}<link>{{ entry.url }}</link>{% endif %}
 	{% if entry.note %}
 	<description>{{ entry.note }}</description>
 	{% elif entry.text %}

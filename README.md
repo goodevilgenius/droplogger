@@ -106,7 +106,7 @@ in the config file. The following are supported:
 
 * Finish this documentation
 * Provide API documentation
-* Create feed module
+* Create feed output
 	+ Types
 		- RSS
 		- ATOM
@@ -114,4 +114,5 @@ in the config file. The following are supported:
 		- JSONP
 	+ Perhaps provide options for uploading feeds somewhere, although this may
       be better served by another application (grunt, e.g.)
+	+ Properly process markdown in description, and title
 * Select specific logs, both in config and command-line
