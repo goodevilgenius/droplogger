@@ -46,28 +46,28 @@ def parse_item(item):
         # Next see if it's an int
         try:
             val = int(item)
-            item = val
+            return val
         except ValueError:
             pass
 
         # Or a flot
         try:
             val = float(item)
-            item = val
+            return val
         except ValueError:
             pass
 
         # Or a date
         try:
             val = dp.parse(item)
-            item = val
+            return val
         except (TypeError, ValueError):
             pass
 
         # Finally check if it's valid json
         try:
             val = json.loads(item)
-            item = val
+            return val
         except ValueError:
             pass
 
@@ -153,7 +153,8 @@ def process_entry(entry, lists = None, list_separator = None):
                 del new[k]
     return new
 
-def read_files(path, files, ext, start, end):
+def read_files(path, files, ext, start, end, max = -1):
+    entries = {}
     for f in files:
         these_entries = []
         name = f.rsplit('.'+ext, 1)[0] if (bool)(ext) else f
@@ -193,6 +194,8 @@ def read_files(path, files, ext, start, end):
 
     for k in entries.keys():
         entries[k].sort(key=sort_key)
+        if max > 0:
+            entries[k] = entries[k][-max:]
 
     return entries
 
@@ -235,6 +238,7 @@ def read_config():
     config = {'output_config':{}}
     config['path'] = os.path.join(os.path.expanduser('~'),'Dropbox','IFTTT','DropLogger')
     config['ext'] = 'txt'
+    config['max'] = -1
     config['recurse'] = True
     config['lists'] = ["tags"]
     config['list_separator'] = ","
@@ -256,10 +260,12 @@ def read_config():
             print(e)
             config_file_values = {}
         merge_dicts(config, config_file_values)
+	
+    return config
 
-
+def get_outputs(output_names):
     real_outputs = []
-    for o in config['outputs']:
+    for o in output_names:
         try:
             real_outputs.append(importlib.import_module("outputs.%s" % o))
             if o in config['output_config']:
@@ -267,20 +273,60 @@ def read_config():
                     real_outputs[len(real_outputs)-1].config[k] = config['output_config'][o][k]
         except ImportError:
             True
-    config['outputs'] = real_outputs
-	
+    return real_outputs
+
+def read_command_line():
+    import argparse
+
+    def parse_date(date):
+        r = None
+        switch = {
+            "min": datetime.datetime.min,
+            "max": datetime.datetime.max,
+            "now": datetime.datetime.now(),
+            "today": datetime.datetime.combine(datetime.date.today(),datetime.time.min.replace(tzinfo=dateutil.tz.tzlocal())),
+            }
+        oneday = datetime.timedelta(days=1)
+        switch["tomorrow"] = switch["today"] + oneday
+        switch["yesterday"] = switch["today"] - oneday
+
+        if date.lower() in switch: r = switch[date.lower()]
+        else:
+            r = dp.parse(date)
+            
+        if r.tzinfo is None:
+            r = r.replace(tzinfo = dateutil.tz.tzlocal())
+        return r
+
+            
+
+    config = {}
+    p = argparse.ArgumentParser()
+    p.add_argument('--start', '-s', type=parse_date, help='Start date to parse, use current if omitted')
+    p.add_argument('--end'  , '-e', type=parse_date, help='End date to parse, use end of today if omitted')
+    p.add_argument('--max', '-m', type=int, help='Max number of items per log')
+    p.add_argument('--outputs', '-o', help="Outputs to use")
+    parsed = p.parse_args()
+
+    if parsed.start is not None: config["start"] = parsed.start
+    if parsed.end is not None: config["end"] = parsed.end
+    if parsed.max is not None: config["max"] = parsed.max
+    if parsed.outputs is not None: config["outputs"] = re.split(' *, *', parsed.outputs)
+    
     return config
 
 if __name__ == "__main__":
     import sys,datetime
 
     config = read_config()
+    comargs = read_command_line()
+    config.update(comargs)
+    config['outputs'] = get_outputs(config['outputs'])
 
     if len(config['outputs']) == 0: sys.exit()
-    entries = {}
 
     files = get_files(config['path'], config['ext'], config['recurse'])
-    entries = read_files(config['path'], files, config['ext'], config['start'], config['end'])
+    entries = read_files(config['path'], files, config['ext'], config['start'], config['end'], config['max'])
 
     for o in config['outputs']:
         o.add_entries(entries)

@@ -81,6 +81,17 @@ The final output is to send each entry to a mongo database.
 
 **TODO**
 
+## Command-line arguments
+
+Droplogger supports a few command-line arguments that override values specified
+in the config file. The following are supported:
+
+* --start, -s: This defines the start time to parse. Normally, this is the
+beginning of the current day.
+* --end, -e: This defines the end time to parse. Normally this is right now.
+* --max, -m: This is the maximum number of items for each log. Defaults to all
+* --outputs, -o: Which outputs to use
+
 ## IFTTT Samples
 
 ### Foursquare
@@ -99,9 +110,6 @@ The final output is to send each entry to a mongo database.
 		- ATOM
 		- JSON
 		- JSONP
-	+ This would probably not be an additional output, as it would likely have
-      very different needs.
 	+ Perhaps provide options for uploading feeds somewhere, although this may
       be better served by another application (grunt, e.g.)
-* Add options to run droplogger on arbitrary time periods (currently runs over
-  the past day)
+* Select specific logs, both in config and command-line
