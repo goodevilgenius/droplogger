@@ -263,17 +263,18 @@ def read_config():
 	
     return config
 
-def get_outputs(output_names):
+def get_outputs(config):
     real_outputs = []
-    for o in output_names:
+    for o in config['outputs']:
         try:
-            real_outputs.append(importlib.import_module("outputs.%s" % o))
+            new_output = importlib.import_module("outputs.%s" % o)
             if o in config['output_config']:
                 for k in config['output_config'][o]:
-                    real_outputs[len(real_outputs)-1].config[k] = config['output_config'][o][k]
+                    new_output.config[k] = config['output_config'][o][k]
+            real_outputs.append(new_output)
         except ImportError:
-            True
-    return real_outputs
+            pass
+    config['outputs'] = real_outputs
 
 def read_command_line():
     import argparse
@@ -326,7 +327,7 @@ if __name__ == "__main__":
     config = read_config()
     comargs = read_command_line()
     config.update(comargs)
-    config['outputs'] = get_outputs(config['outputs'])
+    get_outputs(config)
 
     if len(config['outputs']) == 0: sys.exit()
 
