@@ -8,6 +8,7 @@
   {% for entry in entries %}
   <item>
 	<title>{{ entry.title }}</title>
+	<pubDate>{{ entry.date.strftime('%s')|float|formatdate }}</pubDate>
 	{% if entry.note %}
 	<description>{{ entry.note }}</description>
 	{% elif entry.text %}

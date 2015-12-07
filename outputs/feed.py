@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import os
+from email.utils import formatdate
 
 __all__ = ["add_entries"]
 
@@ -36,6 +37,7 @@ def add_entries(entries):
     
     templates_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates')
     env = jinja2.Environment(loader=jinja2.FileSystemLoader(templates_path))
+    env.filters['formatdate'] = formatdate
 
     for form in config['formats']:
         temp = None
