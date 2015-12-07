@@ -87,10 +87,12 @@ Droplogger supports a few command-line arguments that override values specified
 in the config file. The following are supported:
 
 * --start, -s: This defines the start time to parse. Normally, this is the
-beginning of the current day.
+	beginning of the current day.
 * --end, -e: This defines the end time to parse. Normally this is right now.
 * --max, -m: This is the maximum number of items for each log. Defaults to all
 * --outputs, -o: Which outputs to use
+* --output_config, -c: configure outputs. E.g., `droplogger -o stdout -c stdout json_output true`
+	uses stdout, with json output, regardless of what's set in the config file
 
 ## IFTTT Samples
 

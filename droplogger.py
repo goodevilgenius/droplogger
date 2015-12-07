@@ -298,21 +298,26 @@ def read_command_line():
             r = r.replace(tzinfo = dateutil.tz.tzlocal())
         return r
 
-            
-
     config = {}
     p = argparse.ArgumentParser()
     p.add_argument('--start', '-s', type=parse_date, help='Start date to parse, use current if omitted')
     p.add_argument('--end'  , '-e', type=parse_date, help='End date to parse, use end of today if omitted')
     p.add_argument('--max', '-m', type=int, help='Max number of items per log')
     p.add_argument('--outputs', '-o', help="Outputs to use")
+    p.add_argument('--output_config', '-c', nargs=3, dest='configs', action='append', metavar=('ouptut', 'config','value'), help='Set [output] [config] value as [key]')
     parsed = p.parse_args()
 
     if parsed.start is not None: config["start"] = parsed.start
     if parsed.end is not None: config["end"] = parsed.end
     if parsed.max is not None: config["max"] = parsed.max
     if parsed.outputs is not None: config["outputs"] = re.split(' *, *', parsed.outputs)
-    
+    if parsed.configs is not None:
+        config["output_config"] = {}
+        for values in parsed.configs:
+            if values[0] not in config["output_config"]:
+                config["output_config"][values[0]] = {}
+            config["output_config"][values[0]][values[1]] = parse_item(values[2])
+
     return config
 
 if __name__ == "__main__":
