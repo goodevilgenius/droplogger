@@ -154,12 +154,14 @@ def process_entry(entry, lists = None, list_separator = None):
     return new
 
 def read_files(**kwargs):
+    import codecs
+    
     entries = {}
     for f in kwargs['files']:
         these_entries = []
         name = f.rsplit('.'+kwargs['ext'], 1)[0] if (bool)(kwargs['ext']) else f
         full = os.path.join(kwargs['path'], f)
-        with open(full) as f:
+        with codecs.open(full, encoding='utf-8') as f:
             line = f.readline()
             while line:
                 if line.startswith('@begin'):
