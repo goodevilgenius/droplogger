@@ -29,29 +29,49 @@ def parse_item(item):
     yaml_null = re.compile("^(~|null|Null|NULL|none|None|NONE)")
 
     if isinstance(item, str):
+        # Let's figure out what type this is
+
+        # First let's make sure it's not empty
         item = item.strip()
         if not (bool)(item):
             return None
         if yaml_null.match(item):
             return None
+
+        # Check for a YAML (or JSON) boolean value
         if yaml_bool.match(item):
             item = bool(yaml_true.match(item))
             return item
+
+        # Next see if it's an int
         try:
             val = int(item)
             item = val
         except ValueError:
-            try:
-                val = float(item)
-                item = val
-            except ValueError:
-                try:
-                    val = dp.parse(item)
-                    item = val
-                except TypeError:
-                    pass
-                except ValueError:
-                    pass
+            pass
+
+        # Or a flot
+        try:
+            val = float(item)
+            item = val
+        except ValueError:
+            pass
+
+        # Or a date
+        try:
+            val = dp.parse(item)
+            item = val
+        except (TypeError, ValueError):
+            pass
+
+        # Finally check if it's valid json
+        try:
+            val = json.loads(item)
+            item = val
+        except ValueError:
+            pass
+
+        # If none of these passed, it's still a string
     return item
 
 def process_entry(entry, lists = None, list_separator = None):
@@ -111,6 +131,21 @@ def process_entry(entry, lists = None, list_separator = None):
                 new[k] = ar
             else: del new[k]
         else:
+            if k == "json":
+                try:
+                    newitems = json.loads(new[k])
+                    if "date" in newitems: del newitems["date"]
+                    if "title" in newitems: del newitems["title"]
+                    
+                    for jsonk in newitems.keys():
+                        newk = parse_item(newitems[jsonk])
+                        if newk is not None:
+                            new[jsonk] = newk
+
+                    del new["json"]
+                    continue
+                except ValueError:
+                    pass
             newk = parse_item(new[k])
             if newk is not None:
                 new[k] = newk
