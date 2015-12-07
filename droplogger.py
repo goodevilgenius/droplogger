@@ -11,13 +11,13 @@ import json
 
 first_line_re = re.compile("^@begin\s+([^-]+(?:\s-[0-9]{4})?)\s+-\s*(.*)")
 
-def get_files(path, ext, recurse):
+def get_files(**kwargs):
     r = []
-    wext = ("." + ext) if (bool)(ext) else ""
-    for f in os.listdir(path):
-        full = os.path.join(path, f)
-        if recurse and os.path.isdir(full):
-            for subf in get_files(full, ext, True):
+    wext = ("." + kwargs['ext']) if (bool)(kwargs['ext']) else ""
+    for f in os.listdir(kwargs['path']):
+        full = os.path.join(kwargs['path'], f)
+        if kwargs['recurse'] and os.path.isdir(full):
+            for subf in get_files(path=full, ext=kwargs['ext'], recurse=True):
                 r.append(os.path.join(f, subf))
         elif os.path.isfile(full) and f.endswith(wext):
             r.append(f)
@@ -153,12 +153,12 @@ def process_entry(entry, lists = None, list_separator = None):
                 del new[k]
     return new
 
-def read_files(path, files, ext, start, end, max = -1):
+def read_files(**kwargs):
     entries = {}
-    for f in files:
+    for f in kwargs['files']:
         these_entries = []
-        name = f.rsplit('.'+ext, 1)[0] if (bool)(ext) else f
-        full = os.path.join(path, f)
+        name = f.rsplit('.'+kwargs['ext'], 1)[0] if (bool)(kwargs['ext']) else f
+        full = os.path.join(kwargs['path'], f)
         with open(full) as f:
             line = f.readline()
             while line:
@@ -181,7 +181,7 @@ def read_files(path, files, ext, start, end, max = -1):
                             date = datetime.datetime.fromtimestamp(0)
                         if date.tzinfo is None:
                             date = date.replace(tzinfo = dateutil.tz.tzlocal())
-                        if date and start <= date < end:
+                        if date and kwargs['start'] <= date < kwargs['end']:
                             these_entries.append(process_entry(entry))
                 line = f.readline()
         if len(these_entries) == 0: continue
@@ -194,8 +194,8 @@ def read_files(path, files, ext, start, end, max = -1):
 
     for k in entries.keys():
         entries[k].sort(key=sort_key)
-        if max > 0:
-            entries[k] = entries[k][-max:]
+        if kwargs['max'] > 0:
+            entries[k] = entries[k][-kwargs['max']:]
 
     return entries
 
@@ -331,8 +331,8 @@ if __name__ == "__main__":
 
     if len(config['outputs']) == 0: sys.exit()
 
-    files = get_files(config['path'], config['ext'], config['recurse'])
-    entries = read_files(config['path'], files, config['ext'], config['start'], config['end'], config['max'])
+    config['files'] = get_files(**config)
+    entries = read_files(**config)
 
     for o in config['outputs']:
         o.add_entries(entries)
