@@ -301,8 +301,9 @@ def read_command_line():
             r = r.replace(tzinfo = dateutil.tz.tzlocal())
         return r
 
-    config = {}
+    config = {"list_logs":False}
     p = argparse.ArgumentParser()
+    p.add_argument('--list', '-l', action='store_true', help='Only list the logs')
     p.add_argument('--start', '-s', type=parse_date, help='Start date to parse, use current if omitted')
     p.add_argument('--end'  , '-e', type=parse_date, help='End date to parse, use end of today if omitted')
     p.add_argument('--max', '-m', type=int, help='Max number of items per log')
@@ -310,6 +311,7 @@ def read_command_line():
     p.add_argument('--output_config', '-c', nargs=3, dest='configs', action='append', metavar=('ouptut', 'config','value'), help='Set [output] [config] value as [key]')
     parsed = p.parse_args()
 
+    config["list_logs"] = parsed.list
     if parsed.start is not None: config["start"] = parsed.start
     if parsed.end is not None: config["end"] = parsed.end
     if parsed.max is not None: config["max"] = parsed.max
@@ -329,12 +331,17 @@ if __name__ == "__main__":
     config = read_config()
     comargs = read_command_line()
     config.update(comargs)
-    get_outputs(config)
 
-    if len(config['outputs']) == 0: sys.exit()
+    if not config['list_logs']:
+        get_outputs(config)
+        if len(config['outputs']) == 0: sys.exit()
 
     config['files'] = get_files(**config)
     entries = read_files(**config)
 
-    for o in config['outputs']:
-        o.add_entries(entries)
+    if config['list_logs']:
+        for k in entries.keys():
+            print(k)
+    else:
+        for o in config['outputs']:
+            o.add_entries(entries)
