@@ -12,14 +12,37 @@ import json
 first_line_re = re.compile("^@begin\s+([^-]+(?:\s-[0-9]{4})?)\s+-\s*(.*)")
 
 def get_files(**kwargs):
+    import copy
+    
     r = []
     wext = ("." + kwargs['ext']) if (bool)(kwargs['ext']) else ""
+    xlen = len(wext)
+    has_black = "black" in kwargs and "white" not in kwargs
+    has_white = "white" in kwargs
     for f in os.listdir(kwargs['path']):
         full = os.path.join(kwargs['path'], f)
         if kwargs['recurse'] and os.path.isdir(full):
-            for subf in get_files(path=full, ext=kwargs['ext'], recurse=True):
+            newkwargs = copy.copy(kwargs)
+            newkwargs["path"] = full
+            if has_black:
+                new_black = []
+                for b in kwargs["black"]:
+                    if b.startswith(f + os.sep):
+                        plen = len(f + os.sep)
+                        new_black.append(b[plen:])
+                newkwargs["black"] = new_black
+            if has_white:
+                new_white = []
+                for b in kwargs["white"]:
+                    if b.startswith(f + os.sep):
+                        plen = len(f + os.sep)
+                        new_white.append(b[plen:])
+                newkwargs["white"] = new_white
+            for subf in get_files(**newkwargs):
                 r.append(os.path.join(f, subf))
         elif os.path.isfile(full) and f.endswith(wext):
+            if has_black and f[:-xlen] in kwargs["black"]: continue
+            if has_white and f[:-xlen] not in kwargs["white"]: continue
             r.append(f)
     return r
 
@@ -309,6 +332,8 @@ def read_command_line():
     p.add_argument('--max', '-m', type=int, help='Max number of items per log')
     p.add_argument('--outputs', '-o', help="Outputs to use")
     p.add_argument('--output_config', '-c', nargs=3, dest='configs', action='append', metavar=('ouptut', 'config','value'), help='Set [output] [config] value as [key]')
+    p.add_argument('--white', '-w', action='append', help='Whitelist: only show these logs (use -w multiple times for multiple logs)')
+    p.add_argument('--black', '-b', action='append', help="Blacklist: don't show these logs (use -b multiple times for multiple logs) Ignored if any whitelist items are set")
     parsed = p.parse_args()
 
     config["list_logs"] = parsed.list
@@ -316,6 +341,8 @@ def read_command_line():
     if parsed.end is not None: config["end"] = parsed.end
     if parsed.max is not None: config["max"] = parsed.max
     if parsed.outputs is not None: config["outputs"] = re.split(' *, *', parsed.outputs)
+    if parsed.white is not None and len(parsed.white) > 0: config["white"] = parsed.white
+    if parsed.black is not None and len(parsed.black) > 0: config["black"] = parsed.black
     if parsed.configs is not None:
         config["output_config"] = {}
         for values in parsed.configs:
