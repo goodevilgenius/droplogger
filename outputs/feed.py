@@ -1,12 +1,12 @@
 #!/usr/bin/python
 
-import os
+import os, codecs
 from email.utils import formatdate
 
 __all__ = ["add_entries"]
 
 config = {"path": os.path.join(os.path.expanduser('~'),'Dropbox','Feed'),
-          "filename":"feed_{1}_{2}.{0}", "date":"%Y-%m-%d", 
+          "filename":"feed_{1}_{2}_{3}.{0}", "date":"%Y-%m-%d", 
           "date_time":"%c", "formats": ['rss'],
           "ext":{"rss":"xml","atom":"xml","json":"json","jsonp":"js"},
           "jsonp_callback":"drop_feed","stdout":False,
@@ -15,9 +15,9 @@ config = {"path": os.path.join(os.path.expanduser('~'),'Dropbox','Feed'),
 
 def add_entries(entries):
     if not entries: return
-    print(config) # DEBUG
+    # print(config) # DEBUG
     
-    if not config["stdout"] and not os.path.isdir(config["path"]): os.mkdir(config["path"])
+    if not config["stdout"] and not os.path.isdir(config["path"]): os.makedirs(config["path"])
 
     import jinja2
 
@@ -45,10 +45,23 @@ def add_entries(entries):
             temp = env.get_template(form + ".tpl")
         except jinja2.exceptions.TemplateNotFound:
             pass
-
         if temp is None: continue
+
         for to_send in entries_to_send:
-            print(to_send)
-            print(temp.render(to_send))
+            # print(to_send)
+            logname = to_send["log"]
+            dirname = None
+            if logname.count(os.sep) > 0:
+                dirname = os.path.dirname(logname)
+                tostrip = dirname + os.sep
+                logname = logname[len(tostrip):]
+            filename = config["filename"].format(config["ext"][form], form, logname, "date")
+            f = os.path.join(config["path"], filename) if dirname is None else os.path.join(config["path"], dirname, filename) 
+            if dirname is not None:
+                if not os.path.isdir(os.path.join(config["path"],dirname)):
+                    os.makedirs(os.path.join(config["path"],dirname))
+            fo = codecs.open(f, 'w', 'utf-8')
+            fo.write(temp.render(to_send))
+            fo.close()
             
             

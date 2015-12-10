@@ -79,7 +79,7 @@ have any entries for the past day.
 Here are the configuration options:
 
     {"path": "~/Dropbox/Feed",
-     "filename":"feed_{1}_{2}.{0}",
+     "filename":"feed_{1}_{2}_{3}.{0}",
      "date":"%Y-%m-%d", "date_time":"%c",
      "formats": ['rss'],
      "ext":{"rss":"xml","atom":"xml","json":"json","jsonp":"js"},
@@ -88,7 +88,8 @@ Here are the configuration options:
      "feed_title":"DropLogger feed for {}"}
 
 The `filename` will substite the extenstion for `{0}`, the `format` for `{1}`,
-and the `date` for `{2}`. Feel free to leave any of those out.
+the log name for `{2}`, and the `date` for `{3}`. Feel free to leave any of
+those out.
 
 `formats` should be an array of any of the following: `rss`, `atom`, `json`,
 and/or `jsonp`.
