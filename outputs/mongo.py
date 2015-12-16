@@ -5,7 +5,7 @@ __all__ = ["add_entries"]
 config = {"db": "droplog","host": "localhost", "port": 27017}
 
 def add_entries(entries):
-    import pymongo
+    import pymongo, re
     try:
         cl = pymongo.MongoClient(config['host'], config['port'])
     except AttributeError:
@@ -13,7 +13,7 @@ def add_entries(entries):
     db = cl[config['db']]
 
     for t in entries:
-        name = t.replace('/','.')
+        name = re.sub('\.+','.',t.replace('/','.'))
         for e in entries[t]:
             thisone = db[name].find_one({"date":e["date"],"title":e["title"]})
             if thisone is not None: db[name].update(thisone, e)
