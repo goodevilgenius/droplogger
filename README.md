@@ -164,4 +164,5 @@ in the config file. The following are supported:
 	+ Perhaps provide options for uploading feeds somewhere, although this may
       be better served by another application (grunt, e.g.)
 	+ Properly process markdown in description, and title
+	+ Properly escape characters for XML
 * Select specific logs, both in config and command-line
