@@ -17,5 +17,5 @@
 	{% endif %}
   </item>
   {% endfor %}
-
+</channel>
 </rss>
