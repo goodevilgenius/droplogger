@@ -51,7 +51,7 @@ def parse_item(item):
     yaml_true = re.compile("^(y|Y|yes|Yes|YES|true|True|TRUE|on|On|ON)$")
     yaml_null = re.compile("^(~|null|Null|NULL|none|None|NONE)")
 
-    if isinstance(item, str):
+    if isinstance(item, unicode) or isinstance(item, str):
         # Let's figure out what type this is
 
         # First let's make sure it's not empty
