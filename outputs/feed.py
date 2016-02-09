@@ -15,11 +15,16 @@ config = {"path": os.path.join(os.path.expanduser('~'),'Dropbox','Feed'),
 
 def add_entries(entries):
     if not entries: return
-    # print(config) # DEBUG
     
     if not config["stdout"] and not os.path.isdir(config["path"]): os.makedirs(config["path"])
 
-    import jinja2
+    import jinja2, json
+
+    def serialize_json(obj):
+        return unicode(obj)
+
+    def json_dumps(obj):
+        return json.dumps(obj, default=serialize_json)
 
     entries_to_send = []
     for log in entries:
@@ -33,11 +38,10 @@ def add_entries(entries):
 
         entries_to_send.append(these_entries)
         
-        
-    
     templates_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates')
     env = jinja2.Environment(loader=jinja2.FileSystemLoader(templates_path))
     env.filters['formatdate'] = formatdate
+    env.filters['json.dumps'] = json_dumps
 
     for form in config['formats']:
         temp = None
@@ -48,7 +52,7 @@ def add_entries(entries):
         if temp is None: continue
 
         for to_send in entries_to_send:
-            # print(to_send)
+            to_send["config"] = config
             logname = to_send["log"]
             dirname = None
             if logname.count(os.sep) > 0:
