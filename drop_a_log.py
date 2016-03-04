@@ -110,7 +110,18 @@ if __name__ == "__main__":
 	name, entry = parse_drop_args(p.parse_args())
 	if entry:
 		if add_entry(name, entry):
-			print("Successfully added entry")
+			print("Successfully added entry to %s" % name)
+			print("")
+
+			print(entry["title"])
+			print(entry['date'].strftime('%B %d, %Y at %I:%M:%S%p %z'))
+			print("")
+
+			del(entry["title"])
+			del(entry["date"])
+
+			for (k,v) in entry.iteritems():
+				print("%s: %s" % (k, v if type(v) is str or type(v) is unicode else json.dumps(v)))
 		else:
 			print("Failed to add entry")
 	else:
