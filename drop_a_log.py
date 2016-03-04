@@ -1,8 +1,6 @@
 #!/usr/bin/python
 
-import copy
-import os
-import os.path
+import os, os.path, copy, json
 import datetime, dateutil.tz
 from droplogger import read_config, merge_dicts
 
@@ -10,6 +8,9 @@ def add_entry(name, entry):
 	e = copy.deepcopy(entry)
 	c = read_config()
 	path = c['path']
+
+	lists = c['lists'] or ["tags"]
+	list_separator = c['list_separator'] or ","
 
 	f = name
 	if (bool)(c['ext']):
@@ -46,8 +47,16 @@ def add_entry(name, entry):
 		fp.write("\n")
 
 		for k in e:
+			t = type(e[k])
 			fp.write('@' + k + ' ')
-			fp.write((str)(e[k]))
+			if t is str or t is unicode:
+				fp.write(e[k])
+			elif t is int or t is long or t is float:
+				fp.write((str)(e[k]))
+			elif t is list and k in lists:
+				fp.write(list_separator.join(str(x) for x in e[k]))
+			else:
+				fp.write(json.dumps(e[k]))
 			fp.write("\n")
 
 		fp.write("@end\n")
