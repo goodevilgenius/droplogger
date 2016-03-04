@@ -1,8 +1,6 @@
 #!/usr/bin/python
 
-import copy
-import os
-import os.path
+import os, os.path, copy, json
 import datetime, dateutil.tz
 from droplogger import read_config, merge_dicts
 
@@ -10,6 +8,9 @@ def add_entry(name, entry):
 	e = copy.deepcopy(entry)
 	c = read_config()
 	path = c['path']
+
+	lists = c['lists'] or ["tags"]
+	list_separator = c['list_separator'] or ","
 
 	f = name
 	if (bool)(c['ext']):
@@ -46,8 +47,16 @@ def add_entry(name, entry):
 		fp.write("\n")
 
 		for k in e:
+			t = type(e[k])
 			fp.write('@' + k + ' ')
-			fp.write((str)(e[k]))
+			if t is str or t is unicode:
+				fp.write(e[k])
+			elif t is int or t is long or t is float:
+				fp.write((str)(e[k]))
+			elif t is list and k in lists:
+				fp.write(list_separator.join(str(x) for x in e[k]))
+			else:
+				fp.write(json.dumps(e[k]))
 			fp.write("\n")
 
 		fp.write("@end\n")
@@ -101,7 +110,18 @@ if __name__ == "__main__":
 	name, entry = parse_drop_args(p.parse_args())
 	if entry:
 		if add_entry(name, entry):
-			print("Successfully added entry")
+			print("Successfully added entry to %s" % name)
+			print("")
+
+			print(entry["title"])
+			print(entry['date'].strftime('%B %d, %Y at %I:%M:%S%p %z'))
+			print("")
+
+			del(entry["title"])
+			del(entry["date"])
+
+			for (k,v) in entry.iteritems():
+				print("%s: %s" % (k, v if type(v) is str or type(v) is unicode else json.dumps(v)))
 		else:
 			print("Failed to add entry")
 	else:

@@ -48,14 +48,14 @@ def find_sub_keys(entries, key):
 def add_entries(entries):
     if not entries: return
     
-    import os, copy
+    import os, copy, codecs
     if not os.path.isdir(config["path"]): os.mkdir(config["path"])
 
     c = copy.deepcopy(entries)    
 
     date = c[c.keys()[0]][0]["date"]
     f = os.path.join(config["path"], config["filename"].format(date.strftime(config["short_date"])))
-    fo = open(f, 'w')
+    fo = codecs.open(f, 'w', encoding='utf-8')
 
     fo.write("# " + config["main_header"].format(date.strftime(config["long_date"])))
     fo.write("\n\n")

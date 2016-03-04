@@ -135,6 +135,9 @@ The final output is to send each entry to a mongo database.
 Droplogger supports a few command-line arguments that override values specified
 in the config file. The following are supported:
 
+* --list, -l: List the logs, without actually processing the entries. It only
+	prints logs that have entries within the specified time period. So, to find
+	logs from all time, do the following: `droplogger -l -s min -e now`
 * --start, -s: This defines the start time to parse. Normally, this is the
 	beginning of the current day.
 * --end, -e: This defines the end time to parse. Normally this is right now.
