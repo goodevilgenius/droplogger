@@ -1,20 +1,17 @@
 #!/usr/bin/python
 
 import json
-
 __all__ = ["add_entries"]
-
 config = {"json_output": False, "indent": True}
 
 class MyJSONEncoder(json.JSONEncoder):
     def default(self, obj):
         try:
-            json.dumps(obj)
+            e = json.JSONEncoder()
+            e.encode(obj)
         except TypeError:
-            pass
-        else:
-            return obj
-        return (str)(obj)
+            return (str)(obj)
+        return json.JSONEncoder.default(self, obj)
 
 def add_entries(entries):
     if config['json_output']:
