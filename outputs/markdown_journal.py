@@ -15,7 +15,7 @@ def add_entries_helper(entries_to_send, entries, key):
     if not entries: return
     if not key: return
 
-    if not key in entries_to_send: entries_to_send[key.replace(os.sep,'.')] = {}
+    if not key.replace(os.sep,'.') in entries_to_send: entries_to_send[key.replace(os.sep,'.')] = {}
 
     subs = find_sub_keys(entries, key)
     if len(subs) > 0:
