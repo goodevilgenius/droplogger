@@ -13,6 +13,8 @@
 {%- if "boring" in e and e["boring"] %} &#x1F4A4;{% endif -%}
 {%- if "notes" in e %}   
   Notes: {{ e.notes }}
+{% elif "note" in e %}   
+  Notes: {{ e.note }}
 {%- endif %}
 {%- if "tags" in e %}   
   Tags: {{ ", ".join(e.tags) }}
@@ -21,7 +23,7 @@
 {%- endif %}
 {% if "subs" in items -%}
 {% for subkey,subitems in items["subs"].iteritems() -%}
-{{ render_log(subitems, subkey, depth + 1)}}
+{{ render_log(subitems, subkey, depth + 1) }}
 {%- endfor %}
 {%- endif %}
 {%- endmacro %}
