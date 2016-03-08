@@ -11,6 +11,7 @@
 {{- e["date"].strftime(config["date_time"]) }} - {% if "url" in e %}[{% endif %}{{ e.title }}{% if "url" in e %}]({{ e.url }}){% endif %}
 {%- if "rating" in e %} {{ "&#x2B50;"*e.rating }}{% endif -%}
 {%- if "boring" in e and e["boring"] %} &#x1F4A4;{% endif -%}
+{%- if "funny" in e and e["funny"] %} &#x1F606;{% endif -%}
 {%- if "notes" in e %}   
   Notes: {{ e.notes }}
 {% elif "note" in e %}   
