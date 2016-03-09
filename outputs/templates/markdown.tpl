@@ -13,12 +13,12 @@
 {%- if "boring" in e and e["boring"] %} &#x1F4A4;{% endif -%}
 {%- if "funny" in e and e["funny"] %} &#x1F606;{% endif -%}
 {%- if "notes" in e %}   
-  Notes: {{ e.notes }}
+  Notes: {{ e.notes -}}
 {% elif "note" in e %}   
-  Notes: {{ e.note }}
+  Notes: {{ e.note -}}
 {%- endif %}
 {%- if "tags" in e %}   
-  Tags: {{ ", ".join(e.tags) }}
+  Tags: {{ ", ".join(e.tags) -}}
 {%- endif %}
 {% endfor %}
 {%- endif %}
