@@ -69,24 +69,25 @@ purpose.
 This might be especially useful run regularly with specific command-line
 arguments. E.g., I like to do something like this:
 
-    droplogger -o feed -s min -e now -m 5
+    droplogger -o feed -s min -e now -m 5 -w tracks -w watched
 
-That command generates a feed (or feeds, depending on what's in my settings) of
-the five latest entries for each log. `-s min` guarantees that it will grab as
-far back as it needs to to find the last five. This is useful if a log doesn't
-have any entries for the past day.
+That command generates feeds of the five latest entries for my tracks and
+watched logs. `-s min` guarantees that it will grab as far back as it needs to
+to find the last five. This is useful if a log doesn't have any entries for the
+past day.
 
 Here are the configuration options:
 
-    {"path": "~/Dropbox/Feed",
-     "author": {"name":"Nobody","email":"my.email@example.com"}
-     "filename":"feed_{1}_{2}_{3}.{0}",
-     "date":"%Y-%m-%d", "date_time":"%c",
-     "formats": ['rss'],
-     "ext":{"rss":"xml","atom":"xml","json":"json","jsonp":"js"},
-     "jsonp_callback":"drop_feed",
-     "feed_link":"https://github.com/goodevilgenius/droplogger/",
-     "feed_title":"DropLogger feed for {}"}
+```json
+{"path": "~/Dropbox/Feed", "author":
+ {"name":"Nobody","email":"my.email@example.com"}
+ "filename":"feed_{1}_{2}_{3}.{0}", "date":"%Y-%m-%d", "date_time":"%c",
+ "formats": ['rss'],
+ "ext":{"rss":"xml","atom":"xml","json":"json","jsonp":"js"},
+ "jsonp_callback":"drop_feed",
+ "feed_link":"https://github.com/goodevilgenius/droplogger/",
+ "feed_title":"DropLogger feed for {}"}
+```
 
 The `author` will be used in the `<author>` field in the `ATOM`
 feed. `author.email` is optional.
@@ -152,9 +153,10 @@ in the config file. The following are supported:
 
 ## IFTTT Samples
 
-### Foursquare
-
-[IFTTT Recipe: Add Fourquare checkins to #DropLogger](https://ifttt.com/view_embed_recipe/267058-add-checkins-to-droplogger)
+* [IFTTT Recipe: Add Fourquare checkins to #DropLogger](https://ifttt.com/view_embed_recipe/267058-add-checkins-to-droplogger)
+* [IFTTT Recipe: Add completed tasks to #DropLogger](https://ifttt.com/recipes/397512-add-completed-tasks-to-droplogger)
+* [IFTTT Recipe: Add my tweets to #DropLogger](https://ifttt.com/recipes/397513-add-my-tweets-to-droplogger)
+* [IFTTT Recipe: Write in my #DropLogger #diary](https://ifttt.com/recipes/397514-write-in-my-droplogger-diary)
 
 **More to come**
 
