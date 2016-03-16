@@ -10,7 +10,7 @@
 
   {% for entry in entries %}
   <entry>
-	<title>{{ entry.title }}</title>
+	<title>{{ entry.title|escape }}</title>
 	<id>tag:droplogger.danielrayjones.com,2015:feed:{{ log }}:{{ entry.date.strftime('%s') }}</id>
 	<updated>{{ entry.date.isoformat() }}</updated>
 	{% if entry.url %}<link href="{{ entry.url }}" />{% endif %}
