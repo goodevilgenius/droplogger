@@ -8,7 +8,7 @@
 	{%- if author.email %}<email>{{ author.email }}</email>{% endif %}
   </author>
 
-  {% for entry in entries %}
+  {% for entry in entries[::-1] %}
   <entry>
 	<title>{{ entry.title|escape }}</title>
 	<id>tag:droplogger.danielrayjones.com,2015:feed:{{ log }}:{{ entry.date.strftime('%s') }}</id>

@@ -5,7 +5,7 @@
   <link>{{ link }}</link>
   <description>{{ description }}</description>
 
-  {% for entry in entries %}
+  {% for entry in entries[::-1] %}
   <item>
 	<guid isPermaLink="false">tag:droplogger.danielrayjones.com,2015:feed:{{ log }}:{{ entry.date.strftime('%s') }}</guid>
 	<title>{{ entry.title|escape }}</title>
