@@ -7,7 +7,7 @@
 
   {% for entry in entries %}
   <item>
-	<guid isPermaLink="false">tag:droplogger.danielrayjones.com,2015:feed:rss:{{ log }}:{{ entry.date.strftime('%s') }}</guid>
+	<guid isPermaLink="false">tag:droplogger.danielrayjones.com,2015:feed:{{ log }}:{{ entry.date.strftime('%s') }}</guid>
 	<title>{{ entry.title }}</title>
 	<pubDate>{{ entry.date.strftime('%s')|float|formatdate }}</pubDate>
 	{% if entry.url %}<link>{{ entry.url }}</link>{% endif %}

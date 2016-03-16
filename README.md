@@ -79,6 +79,7 @@ have any entries for the past day.
 Here are the configuration options:
 
     {"path": "~/Dropbox/Feed",
+     "author": {"name":"Nobody","email":"my.email@example.com"}
      "filename":"feed_{1}_{2}_{3}.{0}",
      "date":"%Y-%m-%d", "date_time":"%c",
      "formats": ['rss'],
@@ -86,6 +87,9 @@ Here are the configuration options:
      "jsonp_callback":"drop_feed",
      "feed_link":"https://github.com/goodevilgenius/droplogger/",
      "feed_title":"DropLogger feed for {}"}
+
+The `author` will be used in the `<author>` field in the `ATOM`
+feed. `author.email` is optional.
 
 The `filename` will substite the extenstion for `{0}`, the `format` for `{1}`,
 the log name for `{2}`, and the `date` for `{3}`. Feel free to leave any of
@@ -160,10 +164,10 @@ in the config file. The following are supported:
 * Provide API documentation
 * Create feed output
 	+ Types
-		- RSS
-		- ATOM
-		- JSON
-		- JSONP
+		- ~~RSS~~
+		- ~~ATOM~~
+		- ~~JSON~~
+		- ~~JSONP~~
 	+ Perhaps provide options for uploading feeds somewhere, although this may
       be better served by another application (grunt, e.g.)
 	+ Properly escape characters for XML

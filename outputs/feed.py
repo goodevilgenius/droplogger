@@ -6,6 +6,7 @@ from email.utils import formatdate
 __all__ = ["add_entries"]
 
 config = {"path": os.path.join(os.path.expanduser('~'),'Dropbox','Feed'),
+          "author":{"name":"Nobody"},
           "filename":"feed_{1}_{2}_{3}.{0}", "date":"%Y-%m-%d", 
           "date_time":"%c", "formats": ['rss'],
           "ext":{"rss":"xml","atom":"xml","json":"json","jsonp":"js"},
@@ -31,6 +32,7 @@ def add_entries(entries):
         these_entries = {}
         these_entries["entries"] = entries[log]
         these_entries["log"] = log
+        these_entries["author"] = config["author"]
         these_entries["title"] = config["feed_title"].format(log)
         use_title = "feed_description" not in config or config["feed_description"] is None
         these_entries["description"] = these_entries["title"] if use_title else config["feed_description"].format(log)
