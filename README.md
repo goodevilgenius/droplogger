@@ -79,10 +79,11 @@ past day.
 Here are the configuration options:
 
 ```json
-{"path": "~/Dropbox/Feed", "author":
- {"name":"Nobody","email":"my.email@example.com"}
- "filename":"feed_{1}_{2}_{3}.{0}", "date":"%Y-%m-%d", "date_time":"%c",
- "formats": ['rss'],
+{"path": "~/Dropbox/Feed",
+ "author": {"name":"Nobody","email":"my.email@example.com"},
+ "filename":"feed_{1}_{2}_{3}.{0}",
+ "date":"%Y-%m-%d", "date_time":"%c",
+ "formats": ["rss"],
  "ext":{"rss":"xml","atom":"xml","json":"json","jsonp":"js"},
  "jsonp_callback":"drop_feed",
  "feed_link":"https://github.com/goodevilgenius/droplogger/",
