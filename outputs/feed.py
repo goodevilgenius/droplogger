@@ -18,7 +18,7 @@ def add_entries(entries):
     
     if not config["stdout"] and not os.path.isdir(config["path"]): os.makedirs(config["path"])
 
-    import jinja2, json
+    import jinja2, json, markdown
 
     def serialize_json(obj):
         return unicode(obj)
@@ -42,6 +42,7 @@ def add_entries(entries):
     env = jinja2.Environment(loader=jinja2.FileSystemLoader(templates_path))
     env.filters['formatdate'] = formatdate
     env.filters['json.dumps'] = json_dumps
+    env.filters['markdown'] = markdown.markdown
 
     for form in config['formats']:
         temp = None
