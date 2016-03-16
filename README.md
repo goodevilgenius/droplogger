@@ -162,13 +162,3 @@ in the config file. The following are supported:
 
 * Finish this documentation
 * Provide API documentation
-* Create feed output
-	+ Types
-		- ~~RSS~~
-		- ~~ATOM~~
-		- ~~JSON~~
-		- ~~JSONP~~
-	+ Perhaps provide options for uploading feeds somewhere, although this may
-      be better served by another application (grunt, e.g.)
-	+ Properly escape characters for XML
-* Select specific logs, both in config and command-line

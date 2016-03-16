@@ -20,6 +20,7 @@ def add_entries(entries):
     if not config["stdout"] and not os.path.isdir(config["path"]): os.makedirs(config["path"])
 
     import jinja2, json, markdown
+    from xml.sax.saxutils import escape
 
     def serialize_json(obj):
         return unicode(obj)
@@ -31,6 +32,7 @@ def add_entries(entries):
     for log in entries:
         these_entries = {}
         these_entries["entries"] = entries[log]
+        these_entries["date"] = entries[log][0]['date']
         these_entries["log"] = log
         these_entries["author"] = config["author"]
         these_entries["title"] = config["feed_title"].format(log)
@@ -45,6 +47,7 @@ def add_entries(entries):
     env.filters['formatdate'] = formatdate
     env.filters['json.dumps'] = json_dumps
     env.filters['markdown'] = markdown.markdown
+    env.filters['escape'] = escape
 
     for form in config['formats']:
         temp = None
@@ -62,7 +65,7 @@ def add_entries(entries):
                 dirname = os.path.dirname(logname)
                 tostrip = dirname + os.sep
                 logname = logname[len(tostrip):]
-            filename = config["filename"].format(config["ext"][form], form, logname, "date")
+            filename = config["filename"].format(config["ext"][form], form, logname, to_send["date"].strftime(config["date"]))
             f = os.path.join(config["path"], filename) if dirname is None else os.path.join(config["path"], dirname, filename) 
             if dirname is not None:
                 if not os.path.isdir(os.path.join(config["path"],dirname)):

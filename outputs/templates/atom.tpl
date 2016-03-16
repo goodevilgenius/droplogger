@@ -15,11 +15,11 @@
 	<updated>{{ entry.date.isoformat() }}</updated>
 	{% if entry.url %}<link href="{{ entry.url }}" />{% endif %}
 	{% if entry.note -%}
-	<summary><![CDATA[{{ entry.note|markdown }}]]></summary>
+	<summary type="html"><![CDATA[{{ entry.note|markdown|escape }}]]></summary>
 	{%- elif entry.notes -%}
-	<summary><![CDATA[{{ entry.notes|markdown }}]]></summary>
+	<summary type="html"><![CDATA[{{ entry.notes|markdown|escape }}]]></summary>
 	{%- elif entry.text -%}
-	<summary><![CDATA[{{ entry.text|markdown }}]]></summary>
+	<summary type="html"><![CDATA[{{ entry.text|markdown|escape }}]]></summary>
 	{%- endif %}
   </entry>
   {% endfor %}
