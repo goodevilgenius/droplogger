@@ -174,6 +174,8 @@ def process_entry(entry, lists = None, list_separator = None):
                 new[k] = newk
             else:
                 del new[k]
+    if not "title" in new or new["title"] is None:
+        new["title"] = "Untitled"
     return new
 
 def read_files(**kwargs):
