@@ -176,6 +176,8 @@ def process_entry(entry, lists = None, list_separator = None):
                 del new[k]
     if not "title" in new or new["title"] is None:
         new["title"] = "Untitled"
+    if type(new["title"]) != str and type(new["title"]) != unicode:
+        new["title"] = unicode(new["title"])
     return new
 
 def read_files(**kwargs):
