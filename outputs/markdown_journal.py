@@ -28,6 +28,7 @@ def add_entries_helper(entries_to_send, entries, key):
         del entries[key]
         for e in entries_to_send[key.replace(os.sep,'.')]["entries"]:
             e["title"] = space_re.sub(' ', e["title"])
+            if "tags" in e: e["tags"] = map(unicode, e["tags"])
 
     if not entries_to_send[key.replace(os.sep,'.')]: del entries_to_send[key.replace(os.sep,'.')]
 
