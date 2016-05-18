@@ -1,13 +1,15 @@
 #!/usr/bin/python
 
-import os, codecs
+import os, codecs, datetime
 from email.utils import formatdate
 
 __all__ = ["add_entries"]
 
 config = {"path": os.path.join(os.path.expanduser('~'),'Dropbox','Feed'),
           "author":{"name":"Nobody"},
-          "filename":"feed_{1}_{2}_{3}.{0}", "date":"%Y-%m-%d", 
+          "filename":"feed_{1}_{2}_{3}.{0}",
+          "master_feed":"all_feeds_{1}_{2}.{0}",
+          "date":"%Y-%m-%d", 
           "date_time":"%c", "formats": ['rss'],
           "ext":{"rss":"xml","atom":"xml","json":"json","jsonp":"js"},
           "jsonp_callback":"drop_feed","stdout":False,
@@ -56,6 +58,7 @@ def add_entries(entries):
         except jinja2.exceptions.TemplateNotFound:
             pass
         if temp is None: continue
+        written = []
 
         for to_send in entries_to_send:
             to_send["config"] = config
@@ -73,5 +76,25 @@ def add_entries(entries):
             fo = codecs.open(f, 'w', 'utf-8')
             fo.write(temp.render(to_send))
             fo.close()
-            
-            
+            written.append((logname,filename if dirname is None else os.path.join(dirname, filename)))
+
+        master_filename = config["master_feed"].format(config["ext"][form], form, to_send["date"].strftime(config["date"]))
+        f = os.path.join(config["path"], master_filename)
+        master = {"entries":[]}
+        master["description"] = config["feed_description"].format(form) if "feed_description" in config else config["feed_title"].format(form)
+        master["title"] = config["feed_title"].format(form)
+        master["author"] = config["author"]
+        master["link"] = config["feed_link"]
+        master["date"] = datetime.datetime.now()
+        master["config"] = config
+        master["log"] = form
+        for log in written:
+            entry = {}
+            entry["title"] = config["feed_title"].format(log[0])
+            entry["date"] = datetime.datetime.now()
+            entry["author"] = config["author"]
+            entry["url"] = log[1]
+            master["entries"].append(entry)
+        fo = codecs.open(f, 'w', 'utf-8')
+        fo.write(temp.render(master))
+        fo.close()

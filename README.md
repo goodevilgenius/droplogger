@@ -82,6 +82,7 @@ Here are the configuration options:
 {"path": "~/Dropbox/Feed",
  "author": {"name":"Nobody","email":"my.email@example.com"},
  "filename":"feed_{1}_{2}_{3}.{0}",
+ "master_feed":"all_feeds_{1}_{2}.{0}",
  "date":"%Y-%m-%d", "date_time":"%c",
  "formats": ["rss"],
  "ext":{"rss":"xml","atom":"xml","json":"json","jsonp":"js"},
@@ -96,6 +97,9 @@ feed. `author.email` is optional.
 The `filename` will substite the extenstion for `{0}`, the `format` for `{1}`,
 the log name for `{2}`, and the `date` for `{3}`. Feel free to leave any of
 those out.
+
+The `master_feed` will include a list of all the available feeds. The extension
+will be `{0}`; the `format` will be `{1}` and the `date` will be `{2}`.
 
 `formats` should be an array of any of the following: `rss`, `atom`, `json`,
 and/or `jsonp`.
