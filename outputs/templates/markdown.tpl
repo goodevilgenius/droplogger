@@ -9,6 +9,7 @@
 {% for e in items["entries"] -%}
 * {{ e["date"].strftime(config["date_time"]) }} - {% if "url" in e %}[{% endif %}{{ e.title }}{% if "url" in e %}]({{ e.url }}){% endif %}
 {%- if "like" in e %} {% if e.like %}&#x1F44D;{% else %}&#x1F44E;{% endif %}{% endif -%}
+{%- if "love" in e and e["love"] %} &#x1F495;{% endif -%}
 {%- if "funny" in e and e["funny"] %} &#x1F606;{% endif -%}
 {%- if "boring" in e and e["boring"] %} &#x1F4A4;{% endif -%}
 {%- if "rating" in e %} {{ "&#x2B50;"*e.rating }}{% endif -%}
