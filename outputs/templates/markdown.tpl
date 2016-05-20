@@ -12,6 +12,7 @@
 {%- if "love" in e and e["love"] %} &#x1F495;{% endif -%}
 {%- if "funny" in e and e["funny"] %} &#x1F606;{% endif -%}
 {%- if "boring" in e and e["boring"] %} &#x1F4A4;{% endif -%}
+{%- if "meh" in e and e["meh"] %} &#x1F644;{% endif -%}
 {%- if "rating" in e %} {{ "&#x2B50;"*e.rating }}{% endif -%}
 {%- if "notes" in e %}   
   Notes: {{ e.notes -}}
