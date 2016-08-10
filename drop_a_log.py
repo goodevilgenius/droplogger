@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import os, os.path, copy, json
 import datetime, dateutil.tz
