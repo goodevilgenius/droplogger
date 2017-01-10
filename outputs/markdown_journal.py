@@ -11,30 +11,26 @@ config = {"path": os.path.join(os.path.expanduser('~'),'Dropbox','Journal'),
 
 space_re = re.compile('\s+')
 
-def add_entries_helper(entries, key, level, fo):
+def add_entries_helper(entries_to_send, entries, key):
     if not entries: return
     if not key: return
-    if not level: return
+
+    if not key.replace(os.sep,'.') in entries_to_send: entries_to_send[key.replace(os.sep,'.')] = {}
 
     subs = find_sub_keys(entries, key)
-    if not key in entries and len(subs) == 0: return
+    if len(subs) > 0:
+        entries_to_send[key.replace(os.sep,'.')]["subs"] = {}
+        for sk in subs:
+            add_entries_helper(entries_to_send[key.replace(os.sep,'.')]["subs"], entries, sk)
 
-    fo.write(('#'*level) + ' ' + key.replace(os.sep,'.'))
-    fo.write("\n\n")
     if key in entries:
-        for e in entries[key]:
-            fo.write('* ')
-            fo.write(e["date"].strftime(config["date_time"]))
-            fo.write(" - ")
-            if "url" in e and e["url"] is not None: fo.write('[')
-            fo.write(space_re.sub(' ', e["title"]))
-            if "url" in e and e["url"] is not None: fo.write('](' + e["url"] + ')')
-            fo.write("\n")
-        fo.write("\n")
+        entries_to_send[key.replace(os.sep,'.')]["entries"] = entries[key]
         del entries[key]
+        for e in entries_to_send[key.replace(os.sep,'.')]["entries"]:
+            e["title"] = space_re.sub(' ', e["title"])
+            if "tags" in e: e["tags"] = map(unicode, e["tags"])
 
-    for sk in subs:
-        add_entries_helper(entries, sk, level+1, fo)
+    if not entries_to_send[key.replace(os.sep,'.')]: del entries_to_send[key.replace(os.sep,'.')]
 
 def find_sub_keys(entries, key):
     if not entries: return
@@ -48,35 +44,43 @@ def find_sub_keys(entries, key):
 def add_entries(entries):
     if not entries: return
     
-    import os, copy, codecs
+    import os, copy, codecs, jinja2
     if not os.path.isdir(config["path"]): os.mkdir(config["path"])
 
-    c = copy.deepcopy(entries)    
+    c = copy.deepcopy(entries)
+    entries_to_send = {}
+
+    diary = ""
+    if "diary" in c:
+        for e in c["diary"]:
+            diary = diary + e["text"]
+            diary = diary + "\n\n"
+        del c["diary"]
+
+    for k in find_sub_keys(c, "diary"):
+        for e in c[k]:
+            diary = diary + e["text"]
+            diary = diary + "\n\n"
+        del c[k]
 
     date = c[c.keys()[0]][0]["date"]
     f = os.path.join(config["path"], config["filename"].format(date.strftime(config["short_date"])))
     fo = codecs.open(f, 'w', encoding='utf-8')
 
-    fo.write("# " + config["main_header"].format(date.strftime(config["long_date"])))
-    fo.write("\n\n")
+    title = config["main_header"].format(date.strftime(config["long_date"]))
 
-    if "diary" in c:
-        for e in c["diary"]:
-            fo.write(e["text"])
-            fo.write("\n\n")
-        del c["diary"]
-    
-    for k in find_sub_keys(c, "diary"):
-        for e in c[k]:
-            fo.write(e["text"])
-            fo.write("\n\n")
-        del c[k]
+    for key in c.keys():
+        if not key in c: continue
+        if key.count(os.sep) > 0:
+            i = key.index(os.sep)
+            add_entries_helper(entries_to_send, c, key[:i])
+        else:
+            add_entries_helper(entries_to_send, c, key)
 
-    for t in c.keys():
-        if not t in c: continue
-        if t.count(os.sep) > 0:
-            i = t.index(os.sep)
-            add_entries_helper(c, t[:i], 2, fo)
-        add_entries_helper(c, t, 2, fo)
-    
+    templates_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates')
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(templates_path))
+    temp = env.get_template("markdown.tpl")
+    out = temp.render(title=title, diary=diary, config=config, entries=entries_to_send)
+
+    fo.write(out)
     fo.close()

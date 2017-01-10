@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import os
 import os.path
@@ -51,7 +51,7 @@ def parse_item(item):
     yaml_true = re.compile("^(y|Y|yes|Yes|YES|true|True|TRUE|on|On|ON)$")
     yaml_null = re.compile("^(~|null|Null|NULL|none|None|NONE)")
 
-    if isinstance(item, str):
+    if isinstance(item, unicode) or isinstance(item, str):
         # Let's figure out what type this is
 
         # First let's make sure it's not empty
@@ -174,6 +174,10 @@ def process_entry(entry, lists = None, list_separator = None):
                 new[k] = newk
             else:
                 del new[k]
+    if not "title" in new or new["title"] is None:
+        new["title"] = "Untitled"
+    if type(new["title"]) != str and type(new["title"]) != unicode:
+        new["title"] = unicode(new["title"])
     return new
 
 def read_files(**kwargs):
@@ -301,28 +305,29 @@ def get_outputs(config):
             pass
     config['outputs'] = real_outputs
 
+def parse_date(date):
+    r = None
+    oneday = datetime.timedelta(days=1)
+    switch = {
+        "min": datetime.datetime.min + oneday,
+        "max": datetime.datetime.max - oneday,
+        "now": datetime.datetime.now(),
+        "today": datetime.datetime.combine(datetime.date.today(),datetime.time.min.replace(tzinfo=dateutil.tz.tzlocal())),
+        }
+    switch["tomorrow"] = switch["today"] + oneday
+    switch["yesterday"] = switch["today"] - oneday
+
+    if date.lower() in switch: r = switch[date.lower()]
+    elif date[0] == "@": r = datetime.datetime.fromtimestamp((float)(date[1:]), dateutil.tz.tzlocal())
+    else:
+        r = dp.parse(date)
+
+    if r.tzinfo is None:
+        r = r.replace(tzinfo = dateutil.tz.tzlocal())
+    return r
+
 def read_command_line():
     import argparse
-
-    def parse_date(date):
-        r = None
-        switch = {
-            "min": datetime.datetime.min,
-            "max": datetime.datetime.max,
-            "now": datetime.datetime.now(),
-            "today": datetime.datetime.combine(datetime.date.today(),datetime.time.min.replace(tzinfo=dateutil.tz.tzlocal())),
-            }
-        oneday = datetime.timedelta(days=1)
-        switch["tomorrow"] = switch["today"] + oneday
-        switch["yesterday"] = switch["today"] - oneday
-
-        if date.lower() in switch: r = switch[date.lower()]
-        else:
-            r = dp.parse(date)
-            
-        if r.tzinfo is None:
-            r = r.replace(tzinfo = dateutil.tz.tzlocal())
-        return r
 
     config = {"list_logs":False}
     p = argparse.ArgumentParser()

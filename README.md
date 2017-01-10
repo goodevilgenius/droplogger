@@ -46,7 +46,8 @@ to do something with this. That's what this program is all about. The program
 allows you to use any number of outputs to change these logs into a format
 that's more useful to you. When the program is run, it takes all the log entries
 from the previous day, and sends them to the pre-selected outputs. The program
-currently comes with three outputs: `stdout`, `markdown_journal`, and `mongo`.
+currently comes with three outputs: `stdout`, `feed`, `markdown_journal`, and
+`mongo`.
 
 ### stdout
 
@@ -54,6 +55,64 @@ The first output is `stdout`. All this does is print the log entries to the
 console in an easy-to-read format. It can also output them in JSON format. This
 output was mostly made for testing purposes, but it could also be redirected to
 a file and used however you see fit.
+
+Its config is simple:
+
+    {"json_output": false, "indent": true}
+
+### feed
+
+This output can generate an `RSS`, `ATOM`, or `JSON` feed for each log. These
+can be exported to a website in any way you see fit, or used for any other
+purpose.
+
+This might be especially useful run regularly with specific command-line
+arguments. E.g., I like to do something like this:
+
+    droplogger -o feed -s min -e now -m 5 -w tracks -w watched
+
+That command generates feeds of the five latest entries for my tracks and
+watched logs. `-s min` guarantees that it will grab as far back as it needs to
+to find the last five. This is useful if a log doesn't have any entries for the
+past day.
+
+Here are the configuration options:
+
+```json
+{"path": "~/Dropbox/Feed",
+ "author": {"name":"Nobody","email":"my.email@example.com"},
+ "filename":"feed_{1}_{2}_{3}.{0}",
+ "master_feed":"all_feeds_{1}_{2}.{0}",
+ "date":"%Y-%m-%d", "date_time":"%c",
+ "formats": ["rss"],
+ "ext":{"rss":"xml","atom":"xml","json":"json","jsonp":"js"},
+ "jsonp_callback":"drop_feed",
+ "feed_link":"https://github.com/goodevilgenius/droplogger/",
+ "feed_title":"DropLogger feed for {}"}
+```
+
+The `author` will be used in the `<author>` field in the `ATOM`
+feed. `author.email` is optional.
+
+The `filename` will substite the extenstion for `{0}`, the `format` for `{1}`,
+the log name for `{2}`, and the `date` for `{3}`. Feel free to leave any of
+those out.
+
+The `master_feed` will include a list of all the available feeds. The extension
+will be `{0}`; the `format` will be `{1}` and the `date` will be `{2}`.
+
+`formats` should be an array of any of the following: `rss`, `atom`, `json`,
+and/or `jsonp`.
+
+`ext` defines the file extension for each format.
+
+`jsonp_callback` defines the callback function for the `JSONP` feed.
+
+`feed_link` will change the main feed link. It defaults to droplogger's GitHub
+page, but you may change it to your own website, if you wish.
+
+`feed_title` will be the title of the feed. `{}` will be the name of the log
+(i.e., the filename).
 
 ### Markdown Journal
 
@@ -99,9 +158,10 @@ in the config file. The following are supported:
 
 ## IFTTT Samples
 
-### Foursquare
-
-[IFTTT Recipe: Add Fourquare checkins to #DropLogger](https://ifttt.com/view_embed_recipe/267058-add-checkins-to-droplogger)
+* [IFTTT Recipe: Add Fourquare checkins to #DropLogger](https://ifttt.com/view_embed_recipe/267058-add-checkins-to-droplogger)
+* [IFTTT Recipe: Add completed tasks to #DropLogger](https://ifttt.com/recipes/397512-add-completed-tasks-to-droplogger)
+* [IFTTT Recipe: Add my tweets to #DropLogger](https://ifttt.com/recipes/397513-add-my-tweets-to-droplogger)
+* [IFTTT Recipe: Write in my #DropLogger #diary](https://ifttt.com/recipes/397514-write-in-my-droplogger-diary)
 
 **More to come**
 
@@ -109,12 +169,3 @@ in the config file. The following are supported:
 
 * Finish this documentation
 * Provide API documentation
-* Create feed module
-	+ Types
-		- RSS
-		- ATOM
-		- JSON
-		- JSONP
-	+ Perhaps provide options for uploading feeds somewhere, although this may
-      be better served by another application (grunt, e.g.)
-* Select specific logs, both in config and command-line
