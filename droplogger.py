@@ -307,13 +307,13 @@ def get_outputs(config):
 
 def parse_date(date):
     r = None
+    oneday = datetime.timedelta(days=1)
     switch = {
-        "min": datetime.datetime.min,
-        "max": datetime.datetime.max,
+        "min": datetime.datetime.min + oneday,
+        "max": datetime.datetime.max - oneday,
         "now": datetime.datetime.now(),
         "today": datetime.datetime.combine(datetime.date.today(),datetime.time.min.replace(tzinfo=dateutil.tz.tzlocal())),
         }
-    oneday = datetime.timedelta(days=1)
     switch["tomorrow"] = switch["today"] + oneday
     switch["yesterday"] = switch["today"] - oneday
 
