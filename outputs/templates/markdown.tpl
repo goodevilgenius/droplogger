@@ -25,11 +25,11 @@
 {% endfor %}
 {%- endif %}
 {% if "subs" in items -%}
-{% for subkey,subitems in items["subs"].iteritems() -%}
+{% for subkey,subitems in items["subs"].items() -%}
 {{ render_log(subitems, subkey, depth + 1) }}
 {%- endfor %}
 {%- endif %}
 {%- endmacro %}
-{%- for key,items in entries.iteritems() %}
+{%- for key,items in entries.items() %}
 {{- render_log(items, key, 2) -}}
 {% endfor -%}

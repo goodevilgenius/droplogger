@@ -21,11 +21,11 @@ def add_entries(entries):
         else: print(json.dumps(c, cls=MyJSONEncoder))
     else:
         import os
-        for cat,ents in entries.iteritems():
-            print cat.replace(os.sep,'.')
-            print "======="
+        for cat,ents in entries.items():
+            print(cat.replace(os.sep,'.'))
+            print("=======")
             for i in ents:
-                for k,v in i.iteritems():
+                for k,v in i.items():
                     print("%s: %s" % (k,v))
                 print('')
             print('')
