@@ -129,7 +129,7 @@ if __name__ == "__main__":
 			del(entry["title"])
 			del(entry["date"])
 
-			for (k,v) in entry.iteritems():
+			for (k,v) in entry.items():
 				print("%s: %s" % (k, v if type(v) is str or type(v) is unicode else json.dumps(v)))
 		else:
 			print("Failed to add entry")

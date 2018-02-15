@@ -8,8 +8,21 @@ import datetime
 import re
 import importlib
 import json
+import sys
 
 first_line_re = re.compile("^@begin\s+([^-]+(?:\s-[0-9]{4})?)\s+-\s*(.*)")
+
+def is_string(item):
+    if sys.version_info >= (3,0,0):
+        return isinstance(item, str)
+    else:
+        return isinstance(item, unicode) or isinstance(item, str)
+
+def get_string(item):
+    if sys.version_info >= (3,0,0):
+        return str(item)
+    else:
+        return unicode(item)
 
 def get_files(**kwargs):
     import copy
@@ -51,7 +64,7 @@ def parse_item(item):
     yaml_true = re.compile("^(y|Y|yes|Yes|YES|true|True|TRUE|on|On|ON)$")
     yaml_null = re.compile("^(~|null|Null|NULL|none|None|NONE)")
 
-    if isinstance(item, unicode) or isinstance(item, str):
+    if is_string(item):
         # Let's figure out what type this is
 
         # First let's make sure it's not empty
@@ -176,8 +189,8 @@ def process_entry(entry, lists = None, list_separator = None):
                 del new[k]
     if not "title" in new or new["title"] is None:
         new["title"] = "Untitled"
-    if type(new["title"]) != str and type(new["title"]) != unicode:
-        new["title"] = unicode(new["title"])
+    if not is_string(new["title"]):
+        new["title"] = get_string(new["title"])
     return new
 
 def read_files(**kwargs):
@@ -231,7 +244,7 @@ def read_files(**kwargs):
 def merge_dicts(a, b):
     if not isinstance(b, dict):
         return
-    for k, v in b.iteritems():
+    for k, v in b.items():
         if k in a and isinstance(a[k], dict):
             merge_dicts(a[k], v)
         else:
