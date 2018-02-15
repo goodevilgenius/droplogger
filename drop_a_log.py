@@ -38,10 +38,10 @@ def add_entry(name, entry):
 	fp.seek(0,2)
 	fp.write("@begin ")
 	d = ""
-	if entry['date'].year < 1900:
-		d2 = entry['date'].replace(year=1900)
-		d = d2.strftime('%B %d, %Y at %I:%M:%S%p %z').replace('1900', '%04d' % entry['date'].year)
-	else: d = entry['date'].strftime('%B %d, %Y at %I:%M:%S%p %z')
+	if e['date'].year < 1900:
+		d2 = e['date'].replace(year=1900)
+		d = d2.strftime('%B %d, %Y at %I:%M:%S%p %z').replace('1900', '%04d' % e['date'].year)
+	else: d = e['date'].strftime('%B %d, %Y at %I:%M:%S%p %z')
 	fp.write(d)
 	del e['date']
 	fp.write(' - ')
