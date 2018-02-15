@@ -2,7 +2,7 @@
 
 import os, os.path, copy, json
 import datetime, dateutil.tz
-from droplogger import read_config, merge_dicts, parse_date
+from droplogger import read_config, merge_dicts, parse_date, is_string
 
 def add_entry(name, entry):
 	e = copy.deepcopy(entry)
@@ -38,6 +38,10 @@ def add_entry(name, entry):
 	fp.seek(0,2)
 	fp.write("@begin ")
 	d = ""
+	if not 'date' in e or not e['date']:
+		e['date'] = parse_date('now')
+	if is_string(e['date']):
+		e['date'] = parse_date(e['date'])
 	if e['date'].year < 1900:
 		d2 = e['date'].replace(year=1900)
 		d = d2.strftime('%B %d, %Y at %I:%M:%S%p %z').replace('1900', '%04d' % e['date'].year)
