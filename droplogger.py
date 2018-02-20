@@ -355,8 +355,13 @@ def read_command_line():
     if parsed.end is not None: config["end"] = parsed.end
     if parsed.max is not None: config["max"] = parsed.max
     if parsed.outputs is not None: config["outputs"] = re.split(' *, *', parsed.outputs)
-    if parsed.white is not None and len(parsed.white) > 0: config["white"] = parsed.white
-    if parsed.black is not None and len(parsed.black) > 0: config["black"] = parsed.black
+
+    def parse_color(col):
+        if getattr(parsed, col) is not None and len(getattr(parsed, col)) > 0:
+            config[col] = getattr(parsed, col)
+    parse_color("white")
+    parse_color("black")
+
     if parsed.configs is not None:
         config["output_config"] = {}
         for values in parsed.configs:
