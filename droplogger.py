@@ -37,20 +37,16 @@ def get_files(**kwargs):
         if kwargs['recurse'] and os.path.isdir(full):
             newkwargs = copy.copy(kwargs)
             newkwargs["path"] = full
-            if has_black:
-                new_black = []
-                for b in kwargs["black"]:
-                    if b.startswith(f + os.sep):
-                        plen = len(f + os.sep)
-                        new_black.append(b[plen:])
-                newkwargs["black"] = new_black
-            if has_white:
-                new_white = []
-                for b in kwargs["white"]:
-                    if b.startswith(f + os.sep):
-                        plen = len(f + os.sep)
-                        new_white.append(b[plen:])
-                newkwargs["white"] = new_white
+            def add_black_white(has, key):
+                if has:
+                    newl = []
+                    for k in kwargs[key]:
+                        if k.startswith(f + os.sep):
+                            plen = len(f + os.sep)
+                            newl.append(k[plen:])
+                    newkwargs[key] = newl
+            add_black_white(has_black, "black")
+            add_black_white(has_white, "white")
             for subf in get_files(**newkwargs):
                 r.append(os.path.join(f, subf))
         elif os.path.isfile(full) and f.endswith(wext):
