@@ -169,3 +169,4 @@ in the config file. The following are supported:
 
 * Finish this documentation
 * Provide API documentation
+* Do other things
