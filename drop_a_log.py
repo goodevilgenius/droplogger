@@ -82,14 +82,13 @@ def parse_drop_args(args):
 		"title": args.title, 
 		"date": args.date
 		}
-	if args.items is not None:
-		if 'title' in args.items: del args.items['title']
-		if 'date' in args.items: del args.items['date']
-		merge_dicts(entry, args.items)
-	if args.json is not None:
-		if 'title' in args.json: del args.json['title']
-		if 'date' in args.json: del args.json['date']
-		merge_dicts(entry, args.json)
+	def merge_args(arg):
+		if arg is not None:
+			if 'title' in arg: del arg['title']
+			if 'date' in arg: del arg['date']
+			merge_dicts(entry, arg)
+	merge_args(args.items)
+	merge_args(args.json)
 
 	if not entry['date']: entry['date'] = datetime.datetime.now(dateutil.tz.tzlocal())
 
