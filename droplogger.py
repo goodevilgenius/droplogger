@@ -10,6 +10,7 @@ import importlib
 import json
 import sys
 from utils import *
+from date_utils import *
 
 first_line_re = re.compile("^@begin\s+([^-]+(?:\s-[0-9]{4})?)\s+-\s*(.*)")
 
@@ -302,27 +303,6 @@ def get_outputs(config):
         except ImportError:
             pass
     config['outputs'] = real_outputs
-
-def parse_date(date):
-    r = None
-    oneday = datetime.timedelta(days=1)
-    switch = {
-        "min": datetime.datetime.min + oneday,
-        "max": datetime.datetime.max - oneday,
-        "now": datetime.datetime.now(),
-        "today": datetime.datetime.combine(datetime.date.today(),datetime.time.min.replace(tzinfo=dateutil.tz.tzlocal())),
-        }
-    switch["tomorrow"] = switch["today"] + oneday
-    switch["yesterday"] = switch["today"] - oneday
-
-    if date.lower() in switch: r = switch[date.lower()]
-    elif date[0] == "@": r = datetime.datetime.fromtimestamp((float)(date[1:]), dateutil.tz.tzlocal())
-    else:
-        r = dp.parse(date)
-
-    if r.tzinfo is None:
-        r = r.replace(tzinfo = dateutil.tz.tzlocal())
-    return r
 
 def read_command_line():
     import argparse

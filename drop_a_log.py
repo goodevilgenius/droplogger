@@ -2,8 +2,9 @@
 
 import os, os.path, copy, json
 import datetime, dateutil.tz
-from droplogger import read_config, merge_dicts, parse_date
+from droplogger import read_config, merge_dicts
 from utils import *
+from date_utils import *
 
 def add_entry(name, entry):
 	e = copy.deepcopy(entry)
