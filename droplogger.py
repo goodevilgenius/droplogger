@@ -9,20 +9,9 @@ import re
 import importlib
 import json
 import sys
+from utils import *
 
 first_line_re = re.compile("^@begin\s+([^-]+(?:\s-[0-9]{4})?)\s+-\s*(.*)")
-
-def is_string(item):
-    if sys.version_info >= (3,0,0):
-        return isinstance(item, str)
-    else:
-        return isinstance(item, unicode) or isinstance(item, str)
-
-def get_string(item):
-    if sys.version_info >= (3,0,0):
-        return str(item)
-    else:
-        return unicode(item)
 
 def get_files(**kwargs):
     import copy
