@@ -270,9 +270,8 @@ def read_config():
     config['recurse'] = True
     config['lists'] = ["tags"]
     config['list_separator'] = ","
-    # config['start'] = datetime.datetime.combine(datetime.date.today() - datetime.timedelta(days=1),datetime.time.min.replace(tzinfo=dateutil.tz.tzlocal()))
-    config['start'] = datetime.datetime.combine(datetime.date.today(),datetime.time.min.replace(tzinfo=dateutil.tz.tzlocal()))
-    config['end']   = config['start'] + datetime.timedelta(days=1)
+    config['start'] = parse_date('today')
+    config['end']   = parse_date('tomorrow')
     config['outputs'] = ["stdout"]
 
     config['output_config']['stdout'] = {}
