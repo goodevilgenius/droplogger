@@ -39,17 +39,12 @@ def add_entry(name, entry):
 
 	fp.seek(0,2)
 	fp.write("@begin ")
-	d = ""
+
 	if not 'date' in e or not e['date']:
 		e['date'] = parse_date('now')
-	if is_string(e['date']):
-		e['date'] = parse_date(e['date'])
-	if e['date'].year < 1900:
-		d2 = e['date'].replace(year=1900)
-		d = d2.strftime('%B %d, %Y at %I:%M:%S%p %z').replace('1900', '%04d' % e['date'].year)
-	else: d = e['date'].strftime('%B %d, %Y at %I:%M:%S%p %z')
-	fp.write(d)
+	fp.write(format_date(e['date']))
 	del e['date']
+
 	fp.write(' - ')
 	fp.write(e['title'])
 	del e['title']
@@ -123,12 +118,7 @@ if __name__ == "__main__":
 			print("")
 
 			print(entry["title"])
-			d = ""
-			if entry['date'].year < 1900:
-				d2 = entry['date'].replace(year=1900)
-				d = d2.strftime('%B %d, %Y at %I:%M:%S%p %z').replace('1900', '%04d' % entry['date'].year)
-			else: d = entry['date'].strftime('%B %d, %Y at %I:%M:%S%p %z')
-			print(d)
+			print(format_date(entry['date']))
 			print("")
 
 			del(entry["title"])

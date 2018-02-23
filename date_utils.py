@@ -25,3 +25,13 @@ def parse_date(date):
     if r.tzinfo is None:
         r = r.replace(tzinfo = dateutil.tz.tzlocal())
     return r
+
+def format_date(dt):
+    d = ""
+    if is_string(dt):
+        dt = parse_date(dt)
+    if dt.year < 1900:
+        d2 = dt.replace(year=1900)
+        d = d2.strftime('%B %d, %Y at %I:%M:%S%p %z').replace('1900', '%04d' % dt.year)
+    else: d = dt.strftime('%B %d, %Y at %I:%M:%S%p %z')
+    return d
