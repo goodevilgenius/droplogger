@@ -99,11 +99,11 @@ def parse_item(item):
 def process_entry(entry, lists = None, list_separator = None):
     new = {}
     if lists is None:
-        lists = read_config()['lists']
+        lists = get_config()['lists']
         if lists is None:
             lists = ["tags"]
     if list_separator is None:
-        list_separator = read_config()['list_separator']
+        list_separator = get_config()['list_separator']
         if list_separator is None:
             list_separator = ","
     other_lines_re = re.compile("^@([^\s]+)\s*(.*)")
@@ -236,32 +236,12 @@ def merge_dicts(a, b):
         else:
             a[k] = v
 
-def read_config():
+def get_config(comargs={}):
     import appdirs
 
     config_dir = appdirs.user_data_dir('DropLogger','DanielRayJones')
     if not os.path.exists(config_dir): os.makedirs(config_dir)
     config_file = os.path.join(config_dir, 'config.json')
-    if not os.path.exists(config_file) and not os.path.exists(os.path.join(config_dir, 'config.example.json')):
-        ex_file = open(os.path.join(config_dir, 'config.example.json'), 'w')
-        ex_config = {"__Instructions__": "Modify these settings, and save as config.json in " + config_dir
-                    , "__lists__": "lists should contain a list of item types to be interpreted as lists"
-                    , "path":os.path.join(os.path.expanduser('~'),'Dropbox','IFTTT','DropLogger')
-                    , "ext": "txt"
-                    , "recurse": True
-                    , "lists": ["tags"]
-                    , "list_separator": ","
-                    , "outputs": ["stdout"]
-                    , "output_config" : {
-                        "stdout": {"json_output": False,"indent": True}
-                        , "markdown_journal":
-                        {"path": os.path.join(os.path.expanduser('~'),'Dropbox','Journal'),
-                        "filename":"Journal_{}.md","main_header":"Journal for {}",
-                        "short_date":"%Y-%m-%d","long_date":"%x",
-                        "date_time":"%c"}
-                        }}
-        json.dump(ex_config, ex_file, indent=4)
-        ex_file.close()
 
     config = {'output_config':{}}
     config['path'] = os.path.join(os.path.expanduser('~'),'Dropbox','IFTTT','DropLogger')
@@ -274,8 +254,7 @@ def read_config():
     config['end']   = parse_date('tomorrow')
     config['outputs'] = ["stdout"]
 
-    config['output_config']['stdout'] = {}
-    config['output_config']['stdout']['json_output'] = False
+    config.update(comargs)
 
     if os.path.exists(config_file):
         try:
@@ -287,11 +266,30 @@ def read_config():
             print(e)
             config_file_values = {}
         merge_dicts(config, config_file_values)
+
+    get_outputs(config)
+    get_all_output_configs(config)
+
+    if not os.path.exists(config_file) and not os.path.exists(os.path.join(config_dir, 'config.example.json')):
+        ex_file = open(os.path.join(config_dir, 'config.example.json'), 'w')
+        ex_config = {"__Instructions__": "Modify these settings, and save as config.json in " + config_dir
+                    , "__lists__": "lists should contain a list of item types to be interpreted as lists"
+                    , "path": config['path']
+                    , "ext": config['ext']
+                    , "recurse": config['recurse']
+                    , "lists": config['lists']
+                    , "list_separator": config['list_separator']
+                    , "outputs": config['original_outputs']
+                    , "output_config" : config['original_output_config']
+        }
+        json.dump(ex_config, ex_file, indent=4)
+        ex_file.close()
 	
     return config
 
 def get_outputs(config):
     real_outputs = []
+    orig_outputs = config['outputs']
     for o in config['outputs']:
         try:
             new_output = importlib.import_module("outputs.%s" % o)
@@ -302,6 +300,25 @@ def get_outputs(config):
         except ImportError:
             pass
     config['outputs'] = real_outputs
+    config['original_outputs'] = orig_outputs
+
+def get_all_output_configs(config):
+    import glob
+
+    configs = {}
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    output_path = os.path.join(dir_path, 'outputs')
+    files = glob.glob(output_path + os.sep + '*.py')
+    for o in files:
+        o_mod = os.path.basename(o)[:-3]
+        try:
+            new_output = importlib.import_module("outputs.%s" % o_mod)
+            if "config" in new_output.__dict__ and new_output.config is not None:
+                configs[o_mod] = new_output.config
+        except ImportError:
+            pass
+
+    config['original_output_config'] = configs
 
 def read_command_line():
     import argparse
@@ -342,12 +359,10 @@ def read_command_line():
 if __name__ == "__main__":
     import sys,datetime
 
-    config = read_config()
     comargs = read_command_line()
-    config.update(comargs)
+    config = get_config(comargs)
 
     if not config['list_logs']:
-        get_outputs(config)
         if len(config['outputs']) == 0: sys.exit()
 
     config['files'] = get_files(**config)
