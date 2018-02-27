@@ -9,8 +9,8 @@ import re
 import importlib
 import json
 import sys
-from utils import *
-from date_utils import *
+from utils.misc import *
+from utils.date import *
 
 first_line_re = re.compile("^@begin\s+([^-]+(?:\s-[0-9]{4})?)\s+-\s*(.*)")
 
