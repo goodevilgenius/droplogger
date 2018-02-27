@@ -14,3 +14,11 @@ def get_string(item):
     else:
         return unicode(item)
 
+def merge_dicts(a, b):
+    if not isinstance(b, dict):
+        return
+    for k, v in b.items():
+        if k in a and isinstance(a[k], dict):
+            merge_dicts(a[k], v)
+        else:
+            a[k] = v
