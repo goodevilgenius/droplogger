@@ -2,7 +2,7 @@
 
 import os, os.path, copy, json
 import datetime, dateutil.tz
-from droplogger import get_config, merge_dicts
+from droplogger import get_config
 from utils.misc import *
 from utils.date import *
 

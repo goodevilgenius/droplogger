@@ -227,15 +227,6 @@ def read_files(**kwargs):
 
     return entries
 
-def merge_dicts(a, b):
-    if not isinstance(b, dict):
-        return
-    for k, v in b.items():
-        if k in a and isinstance(a[k], dict):
-            merge_dicts(a[k], v)
-        else:
-            a[k] = v
-
 def get_config(comargs={}):
     import appdirs
 
