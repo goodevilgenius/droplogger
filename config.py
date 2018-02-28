@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import appdirs
+import json
 import os.path
 import importlib
 from utils.misc import merge_dicts
@@ -46,8 +47,8 @@ def get_config(comargs={}):
     get_all_output_configs(config)
 
     if not os.path.exists(config_file) and not os.path.exists(os.path.join(get_dir(), 'config.example.json')):
-        ex_file = open(os.path.join(config_dir, 'config.example.json'), 'w')
-        ex_config = {"__Instructions__": "Modify these settings, and save as config.json in " + config_dir
+        ex_file = open(os.path.join(get_dir(), 'config.example.json'), 'w')
+        ex_config = {"__Instructions__": "Modify these settings, and save as config.json in " + get_dir()
                     , "__lists__": "lists should contain a list of item types to be interpreted as lists"
                     , "path": config['path']
                     , "ext": config['ext']
