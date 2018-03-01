@@ -1,7 +1,22 @@
 # Change Log
 
-## [0.6](https://github.com/goodevilgenius/droplogger/tree/0.6) (2018-02-19)
-[Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v0.5.1...0.6)
+## [0.7](https://github.com/goodevilgenius/droplogger/tree/0.7) (2018-03-01)
+[Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v0.6.1...0.7)
+
+**Closed issues:**
+
+- Test ticket from Code Climate [\#14](https://github.com/goodevilgenius/droplogger/issues/14)
+- Fix "Identical code" issue in drop\_a\_log.py [\#10](https://github.com/goodevilgenius/droplogger/issues/10)
+
+## [v0.6.1](https://github.com/goodevilgenius/droplogger/tree/v0.6.1) (2018-02-22)
+[Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v0.6...v0.6.1)
+
+**Closed issues:**
+
+- Fix "Similar code" issue in droplogger.py [\#11](https://github.com/goodevilgenius/droplogger/issues/11)
+
+## [v0.6](https://github.com/goodevilgenius/droplogger/tree/v0.6) (2018-02-19)
+[Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v0.5.1...v0.6)
 
 **Implemented enhancements:**
 
