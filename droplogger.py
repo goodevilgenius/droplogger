@@ -194,6 +194,10 @@ def read_files(**kwargs):
             while match:
                 entry = match.group()
                 # check for broken entries
+                sub = reg.search(entry, 1)
+                while sub:
+                    entry = sub.group()
+                    sub = reg.search(entry, 1)
                 m = first_line_re.match(entry.splitlines()[0])
                 if m:
                     date = m.group(1).strip()
