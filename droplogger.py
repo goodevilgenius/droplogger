@@ -183,35 +183,34 @@ def read_files(**kwargs):
     import codecs
     
     entries = {}
+    reg = re.compile('^@begin .*?@end\s*$', re.M | re.S)
     for f in kwargs['files']:
         these_entries = []
         name = f.rsplit('.'+kwargs['ext'], 1)[0] if (bool)(kwargs['ext']) else f
         full = os.path.join(kwargs['path'], f)
         with codecs.open(full, encoding='utf-8') as f:
-            line = f.readline()
-            while line:
-                if line.startswith('@begin'):
-                    entry = line
-                    if not entry.strip().endswith('@end'):
-                        line = f.readline()
-                        while line:
-                            if line: entry += line
-                            if line and line.strip().endswith('@end'): break
-                            if not line: break
-                            line = f.readline()
-                    first_line = entry.splitlines()[0]
-                    m = first_line_re.match(first_line)
-                    if m:
-                        date = m.groups()[0].strip()
-                        try:
-                            date = dp.parse(date)
-                        except ValueError:
-                            date = datetime.datetime.fromtimestamp(0)
-                        if date.tzinfo is None:
-                            date = date.replace(tzinfo = dateutil.tz.tzlocal())
-                        if date and kwargs['start'] <= date < kwargs['end']:
-                            these_entries.append(process_entry(entry))
-                line = f.readline()
+            text = f.read()
+            match = reg.search(text)
+            while match:
+                entry = match.group()
+                # check for broken entries
+                sub = reg.search(entry, 1)
+                while sub:
+                    entry = sub.group()
+                    sub = reg.search(entry, 1)
+                m = first_line_re.match(entry.splitlines()[0])
+                if m:
+                    date = m.group(1).strip()
+                    try:
+                        date = dp.parse(date)
+                    except ValueError:
+                        date = datetime.datetime.fromtimestamp(0)
+                    if date.tzinfo is None:
+                        date = date.replace(tzinfo = dateutil.tz.tzlocal())
+                    if date and kwargs['start'] <= date < kwargs['end']:
+                        these_entries.append(process_entry(entry))
+                match = reg.search(text, match.end())
+
         if len(these_entries) == 0: continue
         if not name in entries:
             entries[name] = these_entries
