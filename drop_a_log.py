@@ -2,11 +2,13 @@
 
 import os, os.path, copy, json
 import datetime, dateutil.tz
-from droplogger import read_config, merge_dicts, parse_date, is_string
+from config import get_config
+from utils.misc import *
+from utils.date import *
 
 def add_entry(name, entry):
 	e = copy.deepcopy(entry)
-	c = read_config()
+	c = get_config()
 	path = c['path']
 
 	lists = c['lists'] or ["tags"]
@@ -37,17 +39,12 @@ def add_entry(name, entry):
 
 	fp.seek(0,2)
 	fp.write("@begin ")
-	d = ""
+
 	if not 'date' in e or not e['date']:
 		e['date'] = parse_date('now')
-	if is_string(e['date']):
-		e['date'] = parse_date(e['date'])
-	if e['date'].year < 1900:
-		d2 = e['date'].replace(year=1900)
-		d = d2.strftime('%B %d, %Y at %I:%M:%S%p %z').replace('1900', '%04d' % e['date'].year)
-	else: d = e['date'].strftime('%B %d, %Y at %I:%M:%S%p %z')
-	fp.write(d)
+	fp.write(format_date(e['date']))
 	del e['date']
+
 	fp.write(' - ')
 	fp.write(e['title'])
 	del e['title']
@@ -82,14 +79,13 @@ def parse_drop_args(args):
 		"title": args.title, 
 		"date": args.date
 		}
-	if args.items is not None:
-		if 'title' in args.items: del args.items['title']
-		if 'date' in args.items: del args.items['date']
-		merge_dicts(entry, args.items)
-	if args.json is not None:
-		if 'title' in args.json: del args.json['title']
-		if 'date' in args.json: del args.json['date']
-		merge_dicts(entry, args.json)
+	def merge_args(arg):
+		if arg is not None:
+			if 'title' in arg: del arg['title']
+			if 'date' in arg: del arg['date']
+			merge_dicts(entry, arg)
+	merge_args(args.items)
+	merge_args(args.json)
 
 	if not entry['date']: entry['date'] = datetime.datetime.now(dateutil.tz.tzlocal())
 
@@ -122,12 +118,7 @@ if __name__ == "__main__":
 			print("")
 
 			print(entry["title"])
-			d = ""
-			if entry['date'].year < 1900:
-				d2 = entry['date'].replace(year=1900)
-				d = d2.strftime('%B %d, %Y at %I:%M:%S%p %z').replace('1900', '%04d' % entry['date'].year)
-			else: d = entry['date'].strftime('%B %d, %Y at %I:%M:%S%p %z')
-			print(d)
+			print(format_date(entry['date']))
 			print("")
 
 			del(entry["title"])

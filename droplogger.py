@@ -6,23 +6,13 @@ import dateutil
 import dateutil.parser as dp
 import datetime
 import re
-import importlib
 import json
 import sys
+from config import get_config
+from utils.misc import *
+from utils.date import *
 
 first_line_re = re.compile("^@begin\s+([^-]+(?:\s-[0-9]{4})?)\s+-\s*(.*)")
-
-def is_string(item):
-    if sys.version_info >= (3,0,0):
-        return isinstance(item, str)
-    else:
-        return isinstance(item, unicode) or isinstance(item, str)
-
-def get_string(item):
-    if sys.version_info >= (3,0,0):
-        return str(item)
-    else:
-        return unicode(item)
 
 def get_files(**kwargs):
     import copy
@@ -37,20 +27,16 @@ def get_files(**kwargs):
         if kwargs['recurse'] and os.path.isdir(full):
             newkwargs = copy.copy(kwargs)
             newkwargs["path"] = full
-            if has_black:
-                new_black = []
-                for b in kwargs["black"]:
-                    if b.startswith(f + os.sep):
-                        plen = len(f + os.sep)
-                        new_black.append(b[plen:])
-                newkwargs["black"] = new_black
-            if has_white:
-                new_white = []
-                for b in kwargs["white"]:
-                    if b.startswith(f + os.sep):
-                        plen = len(f + os.sep)
-                        new_white.append(b[plen:])
-                newkwargs["white"] = new_white
+            def add_black_white(has, key):
+                if has:
+                    newl = []
+                    for k in kwargs[key]:
+                        if k.startswith(f + os.sep):
+                            plen = len(f + os.sep)
+                            newl.append(k[plen:])
+                    newkwargs[key] = newl
+            add_black_white(has_black, "black")
+            add_black_white(has_white, "white")
             for subf in get_files(**newkwargs):
                 r.append(os.path.join(f, subf))
         elif os.path.isfile(full) and f.endswith(wext):
@@ -113,11 +99,11 @@ def parse_item(item):
 def process_entry(entry, lists = None, list_separator = None):
     new = {}
     if lists is None:
-        lists = read_config()['lists']
+        lists = get_config()['lists']
         if lists is None:
             lists = ["tags"]
     if list_separator is None:
-        list_separator = read_config()['list_separator']
+        list_separator = get_config()['list_separator']
         if list_separator is None:
             list_separator = ","
     other_lines_re = re.compile("^@([^\s]+)\s*(.*)")
@@ -197,35 +183,34 @@ def read_files(**kwargs):
     import codecs
     
     entries = {}
+    reg = re.compile('^@begin .*?@end\s*$', re.M | re.S)
     for f in kwargs['files']:
         these_entries = []
         name = f.rsplit('.'+kwargs['ext'], 1)[0] if (bool)(kwargs['ext']) else f
         full = os.path.join(kwargs['path'], f)
         with codecs.open(full, encoding='utf-8') as f:
-            line = f.readline()
-            while line:
-                if line.startswith('@begin'):
-                    entry = line
-                    if not entry.strip().endswith('@end'):
-                        line = f.readline()
-                        while line:
-                            if line: entry += line
-                            if line and line.strip().endswith('@end'): break
-                            if not line: break
-                            line = f.readline()
-                    first_line = entry.splitlines()[0]
-                    m = first_line_re.match(first_line)
-                    if m:
-                        date = m.groups()[0].strip()
-                        try:
-                            date = dp.parse(date)
-                        except ValueError:
-                            date = datetime.datetime.fromtimestamp(0)
-                        if date.tzinfo is None:
-                            date = date.replace(tzinfo = dateutil.tz.tzlocal())
-                        if date and kwargs['start'] <= date < kwargs['end']:
-                            these_entries.append(process_entry(entry))
-                line = f.readline()
+            text = f.read()
+            match = reg.search(text)
+            while match:
+                entry = match.group()
+                # check for broken entries
+                sub = reg.search(entry, 1)
+                while sub:
+                    entry = sub.group()
+                    sub = reg.search(entry, 1)
+                m = first_line_re.match(entry.splitlines()[0])
+                if m:
+                    date = m.group(1).strip()
+                    try:
+                        date = dp.parse(date)
+                    except ValueError:
+                        date = datetime.datetime.fromtimestamp(0)
+                    if date.tzinfo is None:
+                        date = date.replace(tzinfo = dateutil.tz.tzlocal())
+                    if date and kwargs['start'] <= date < kwargs['end']:
+                        these_entries.append(process_entry(entry))
+                match = reg.search(text, match.end())
+
         if len(these_entries) == 0: continue
         if not name in entries:
             entries[name] = these_entries
@@ -240,104 +225,6 @@ def read_files(**kwargs):
             entries[k] = entries[k][-kwargs['max']:]
 
     return entries
-
-def merge_dicts(a, b):
-    if not isinstance(b, dict):
-        return
-    for k, v in b.items():
-        if k in a and isinstance(a[k], dict):
-            merge_dicts(a[k], v)
-        else:
-            a[k] = v
-
-def read_config():
-    import appdirs
-
-    config_dir = appdirs.user_data_dir('DropLogger','DanielRayJones')
-    if not os.path.exists(config_dir): os.makedirs(config_dir)
-    config_file = os.path.join(config_dir, 'config.json')
-    if not os.path.exists(config_file) and not os.path.exists(os.path.join(config_dir, 'config.example.json')):
-        ex_file = open(os.path.join(config_dir, 'config.example.json'), 'w')
-        ex_config = {"__Instructions__": "Modify these settings, and save as config.json in " + config_dir
-                    , "__lists__": "lists should contain a list of item types to be interpreted as lists"
-                    , "path":os.path.join(os.path.expanduser('~'),'Dropbox','IFTTT','DropLogger')
-                    , "ext": "txt"
-                    , "recurse": True
-                    , "lists": ["tags"]
-                    , "list_separator": ","
-                    , "outputs": ["stdout"]
-                    , "output_config" : {
-                        "stdout": {"json_output": False,"indent": True}
-                        , "markdown_journal":
-                        {"path": os.path.join(os.path.expanduser('~'),'Dropbox','Journal'),
-                        "filename":"Journal_{}.md","main_header":"Journal for {}",
-                        "short_date":"%Y-%m-%d","long_date":"%x",
-                        "date_time":"%c"}
-                        }}
-        json.dump(ex_config, ex_file, indent=4)
-        ex_file.close()
-
-    config = {'output_config':{}}
-    config['path'] = os.path.join(os.path.expanduser('~'),'Dropbox','IFTTT','DropLogger')
-    config['ext'] = 'txt'
-    config['max'] = -1
-    config['recurse'] = True
-    config['lists'] = ["tags"]
-    config['list_separator'] = ","
-    # config['start'] = datetime.datetime.combine(datetime.date.today() - datetime.timedelta(days=1),datetime.time.min.replace(tzinfo=dateutil.tz.tzlocal()))
-    config['start'] = datetime.datetime.combine(datetime.date.today(),datetime.time.min.replace(tzinfo=dateutil.tz.tzlocal()))
-    config['end']   = config['start'] + datetime.timedelta(days=1)
-    config['outputs'] = ["stdout"]
-
-    config['output_config']['stdout'] = {}
-    config['output_config']['stdout']['json_output'] = False
-
-    if os.path.exists(config_file):
-        try:
-            with open(config_file) as f:
-                config_file_values = json.load(f)
-        except ValueError as e:
-            print("Couldn't read config file: %s" % config_file)
-            print("Using default config values")
-            print(e)
-            config_file_values = {}
-        merge_dicts(config, config_file_values)
-	
-    return config
-
-def get_outputs(config):
-    real_outputs = []
-    for o in config['outputs']:
-        try:
-            new_output = importlib.import_module("outputs.%s" % o)
-            if o in config['output_config']:
-                for k in config['output_config'][o]:
-                    new_output.config[k] = config['output_config'][o][k]
-            real_outputs.append(new_output)
-        except ImportError:
-            pass
-    config['outputs'] = real_outputs
-
-def parse_date(date):
-    r = None
-    oneday = datetime.timedelta(days=1)
-    switch = {
-        "min": datetime.datetime.min + oneday,
-        "max": datetime.datetime.max - oneday,
-        "now": datetime.datetime.now(),
-        "today": datetime.datetime.combine(datetime.date.today(),datetime.time.min.replace(tzinfo=dateutil.tz.tzlocal())),
-        }
-    switch["tomorrow"] = switch["today"] + oneday
-    switch["yesterday"] = switch["today"] - oneday
-
-    if date.lower() in switch: r = switch[date.lower()]
-    elif date[0] == "@": r = datetime.datetime.fromtimestamp((float)(date[1:]), dateutil.tz.tzlocal())
-    else:
-        r = dp.parse(date)
-
-    if r.tzinfo is None:
-        r = r.replace(tzinfo = dateutil.tz.tzlocal())
-    return r
 
 def read_command_line():
     import argparse
@@ -359,8 +246,13 @@ def read_command_line():
     if parsed.end is not None: config["end"] = parsed.end
     if parsed.max is not None: config["max"] = parsed.max
     if parsed.outputs is not None: config["outputs"] = re.split(' *, *', parsed.outputs)
-    if parsed.white is not None and len(parsed.white) > 0: config["white"] = parsed.white
-    if parsed.black is not None and len(parsed.black) > 0: config["black"] = parsed.black
+
+    def parse_color(col):
+        if getattr(parsed, col) is not None and len(getattr(parsed, col)) > 0:
+            config[col] = getattr(parsed, col)
+    parse_color("white")
+    parse_color("black")
+
     if parsed.configs is not None:
         config["output_config"] = {}
         for values in parsed.configs:
@@ -373,12 +265,10 @@ def read_command_line():
 if __name__ == "__main__":
     import sys,datetime
 
-    config = read_config()
     comargs = read_command_line()
-    config.update(comargs)
+    config = get_config(comargs)
 
     if not config['list_logs']:
-        get_outputs(config)
         if len(config['outputs']) == 0: sys.exit()
 
     config['files'] = get_files(**config)
