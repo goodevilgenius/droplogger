@@ -30,8 +30,6 @@ def get_config(comargs={}):
     config['end']   = parse_date('tomorrow')
     config['outputs'] = ["stdout"]
 
-    config.update(comargs)
-
     if os.path.exists(config_file):
         try:
             with open(config_file) as f:
@@ -43,6 +41,7 @@ def get_config(comargs={}):
             config_file_values = {}
         merge_dicts(config, config_file_values)
 
+    merge_dicts(config, comargs)
     get_outputs(config)
     get_all_output_configs(config)
 
