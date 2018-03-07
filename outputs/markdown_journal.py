@@ -47,6 +47,25 @@ def find_sub_keys(entries, key):
         if k.startswith(key + os.sep): r.append(k)
     return r
 
+def get_diary(entries, key, header = '', use_title = False):
+    diary = ""
+    if key in entries:
+        for e in entries[key]:
+            if use_title: diary = diary + '### ' + e['title'] + "\n\n"
+            diary = diary + e["text"]
+            diary = diary + "\n\n"
+        del entries[key]
+
+    for k in find_sub_keys(entries, key):
+        for e in entries[k]:
+            if use_title: diary = diary + '### ' + e['title'] + "\n\n"
+            diary = diary + e["text"]
+            diary = diary + "\n\n"
+        del entries[k]
+    if bool(header) and bool(diary):
+        diary = '## ' + header + '\n\n' + diary
+    return diary
+
 def add_entries(entries):
     if not entries: return
     
@@ -56,20 +75,10 @@ def add_entries(entries):
     c = copy.deepcopy(entries)
     entries_to_send = {}
 
-    diary = ""
-    if "diary" in c:
-        for e in c["diary"]:
-            diary = diary + e["text"]
-            diary = diary + "\n\n"
-        del c["diary"]
-
-    for k in find_sub_keys(c, "diary"):
-        for e in c[k]:
-            diary = diary + e["text"]
-            diary = diary + "\n\n"
-        del c[k]
-
     date = c[c.keys()[0]][0]["date"]
+
+    diary = get_diary(c, "diary")
+
     f = os.path.join(config["path"], config["filename"].format(date.strftime(config["short_date"])))
     fo = codecs.open(f, 'w', encoding='utf-8')
 
