@@ -78,6 +78,7 @@ def add_entries(entries):
     date = c[c.keys()[0]][0]["date"]
 
     diary = get_diary(c, "diary")
+    diary = diary + get_diary(c, "dreams", "Dreams", True)
 
     f = os.path.join(config["path"], config["filename"].format(date.strftime(config["short_date"])))
     fo = codecs.open(f, 'w', encoding='utf-8')
