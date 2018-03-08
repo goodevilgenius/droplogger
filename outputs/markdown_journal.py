@@ -4,7 +4,8 @@ import os, os.path, re
 
 __all__ = ["add_entries"]
 
-config = {"path": os.path.join(os.path.expanduser('~'),'Dropbox','Journal'),
+config = {"__Instructions__":"In filename and main_header, {} is replaced with the log title",
+          "path": os.path.join(os.path.expanduser('~'),'Dropbox','Journal'),
           "filename":"Journal_{}.md","main_header":"Journal for {}",
           "short_date":"%Y-%m-%d","long_date":"%x",
           "date_time":"%c"}

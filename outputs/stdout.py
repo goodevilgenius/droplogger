@@ -2,7 +2,7 @@
 
 import json
 __all__ = ["add_entries"]
-config = {"json_output": False, "indent": True}
+config = {"__Instructions__":"if json_output is true, will be output in JSON format. With indent set true, it will be pretty-printed","json_output": False, "indent": True}
 
 class MyJSONEncoder(json.JSONEncoder):
     def default(self, obj):
