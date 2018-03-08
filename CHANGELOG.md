@@ -1,7 +1,7 @@
 # Change Log
 
-## [0.8](https://github.com/goodevilgenius/droplogger/tree/0.8) (2018-03-08)
-[Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v0.7.1...0.8)
+## [v0.8](https://github.com/goodevilgenius/droplogger/tree/v0.8) (2018-03-08)
+[Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v0.7.1...v0.8)
 
 **Implemented enhancements:**
 
