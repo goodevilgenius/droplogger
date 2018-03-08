@@ -12,14 +12,14 @@ config = {"path": os.path.join(os.path.expanduser('~'),'Dropbox','Feed'),
           "date":"%Y-%m-%d", 
           "date_time":"%c", "formats": ['rss'],
           "ext":{"rss":"xml","atom":"xml","json":"json","jsonp":"js"},
-          "jsonp_callback":"drop_feed","stdout":False,
+          "jsonp_callback":"drop_feed",
           "feed_link":"https://github.com/goodevilgenius/droplogger/",
           "feed_title":"DropLogger feed for {}"}
 
 def add_entries(entries):
     if not entries: return
     
-    if not config["stdout"] and not os.path.isdir(config["path"]): os.makedirs(config["path"])
+    if not os.path.isdir(config["path"]): os.makedirs(config["path"])
 
     import jinja2, json, markdown
     from xml.sax.saxutils import escape
