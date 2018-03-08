@@ -5,21 +5,25 @@ from email.utils import formatdate
 
 __all__ = ["add_entries"]
 
-config = {"path": os.path.join(os.path.expanduser('~'),'Dropbox','Feed'),
-          "author":{"name":"Nobody"},
+config = {"__Instructions_filename_":"In the filename, 0 is the extension, specified by ext, 1 is the format name, 2 is the log name, and 3 is the date, specified by the format in date",
+          "__Instructions_master_feed_":"A master feed will link to all the other feeds. 0 is the extension, the format is 1, and the date is 2",
+          "__Instructions_feed_title_":"{} will be replaced with the log name",
+          "__Instructions_author_":"Author will be included in atom feed. email may also be specified",
+          "path": os.path.join(os.path.expanduser('~'),'Dropbox','Feed'),
+          "author":{"name":"Nobody","email":None},
           "filename":"feed_{1}_{2}_{3}.{0}",
           "master_feed":"all_feeds_{1}_{2}.{0}",
           "date":"%Y-%m-%d", 
           "date_time":"%c", "formats": ['rss'],
           "ext":{"rss":"xml","atom":"xml","json":"json","jsonp":"js"},
-          "jsonp_callback":"drop_feed","stdout":False,
+          "jsonp_callback":"drop_feed",
           "feed_link":"https://github.com/goodevilgenius/droplogger/",
           "feed_title":"DropLogger feed for {}"}
 
 def add_entries(entries):
     if not entries: return
     
-    if not config["stdout"] and not os.path.isdir(config["path"]): os.makedirs(config["path"])
+    if not os.path.isdir(config["path"]): os.makedirs(config["path"])
 
     import jinja2, json, markdown
     from xml.sax.saxutils import escape

@@ -4,7 +4,8 @@ import os, os.path, re
 
 __all__ = ["add_entries"]
 
-config = {"path": os.path.join(os.path.expanduser('~'),'Dropbox','Journal'),
+config = {"__Instructions__":"In filename and main_header, {} is replaced with the log title",
+          "path": os.path.join(os.path.expanduser('~'),'Dropbox','Journal'),
           "filename":"Journal_{}.md","main_header":"Journal for {}",
           "short_date":"%Y-%m-%d","long_date":"%x",
           "date_time":"%c"}
@@ -39,13 +40,32 @@ def add_entries_helper(entries_to_send, entries, key):
     if not entries_to_send[key.replace(os.sep,'.')]: del entries_to_send[key.replace(os.sep,'.')]
 
 def find_sub_keys(entries, key):
-    if not entries: return
-    if not key: return
+    if not entries: return []
+    if not key: return []
 
     r = []
     for k in entries:
         if k.startswith(key + os.sep): r.append(k)
     return r
+
+def get_diary(entries, key, header = '', use_title = False):
+    diary = ""
+    if key in entries:
+        for e in entries[key]:
+            if use_title: diary = diary + '### ' + e['title'] + "\n\n"
+            diary = diary + e["text"]
+            diary = diary + "\n\n"
+        del entries[key]
+
+    for k in find_sub_keys(entries, key):
+        for e in entries[k]:
+            if use_title: diary = diary + '### ' + e['title'] + "\n\n"
+            diary = diary + e["text"]
+            diary = diary + "\n\n"
+        del entries[k]
+    if bool(header) and bool(diary):
+        diary = '## ' + header + '\n\n' + diary
+    return diary
 
 def add_entries(entries):
     if not entries: return
@@ -56,20 +76,11 @@ def add_entries(entries):
     c = copy.deepcopy(entries)
     entries_to_send = {}
 
-    diary = ""
-    if "diary" in c:
-        for e in c["diary"]:
-            diary = diary + e["text"]
-            diary = diary + "\n\n"
-        del c["diary"]
-
-    for k in find_sub_keys(c, "diary"):
-        for e in c[k]:
-            diary = diary + e["text"]
-            diary = diary + "\n\n"
-        del c[k]
-
     date = c[c.keys()[0]][0]["date"]
+
+    diary = get_diary(c, "diary")
+    diary = diary + get_diary(c, "dreams", "Dreams", True)
+
     f = os.path.join(config["path"], config["filename"].format(date.strftime(config["short_date"])))
     fo = codecs.open(f, 'w', encoding='utf-8')
 
