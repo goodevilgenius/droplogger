@@ -3,7 +3,7 @@
 import datetime
 import dateutil
 import dateutil.parser as dp
-from misc import is_string
+from .misc import is_string
 
 def parse_date(date):
     r = None
