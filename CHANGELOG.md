@@ -1,7 +1,22 @@
 # Change Log
 
-## [0.7](https://github.com/goodevilgenius/droplogger/tree/0.7) (2018-03-01)
-[Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v0.6.1...0.7)
+## [0.8](https://github.com/goodevilgenius/droplogger/tree/0.8) (2018-03-08)
+[Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v0.7.1...0.8)
+
+**Implemented enhancements:**
+
+- Add a "dreams" section to markdown journal [\#18](https://github.com/goodevilgenius/droplogger/issues/18)
+- Give good information when launching the first time [\#8](https://github.com/goodevilgenius/droplogger/issues/8)
+
+## [v0.7.1](https://github.com/goodevilgenius/droplogger/tree/v0.7.1) (2018-03-02)
+[Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v0.7...v0.7.1)
+
+**Fixed bugs:**
+
+- Output specified on the command-line ignored [\#17](https://github.com/goodevilgenius/droplogger/issues/17)
+
+## [v0.7](https://github.com/goodevilgenius/droplogger/tree/v0.7) (2018-03-01)
+[Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v0.6.1...v0.7)
 
 **Closed issues:**
 
