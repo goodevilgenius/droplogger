@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+import sys
 import appdirs
 import json
 import os.path
 import importlib
 from utils.misc import merge_dicts
 from utils.date import parse_date
+
+welcome = False
 
 def get_dir():
     config_dir = appdirs.user_data_dir('DropLogger','DanielRayJones')
@@ -17,6 +21,7 @@ def get_config_path():
     return os.path.join(get_dir(), 'config.json')
 
 def get_config(comargs={}):
+    global welcome
     config_file = get_config_path()
 
     config = {'output_config':{}}
@@ -59,6 +64,12 @@ def get_config(comargs={}):
         }
         json.dump(ex_config, ex_file, indent=4)
         ex_file.close()
+
+    if not os.path.exists(config_file) and not welcome:
+        print('No config file present. Using default values.', file=sys.stderr)
+        print('Please move %s to %s, and set values as appropriate' % (os.path.join(get_dir(), 'config.example.json'), config_file), file=sys.stderr)
+        print('', file=sys.stderr)
+        welcome = True
 	
     return config
 
