@@ -262,8 +262,8 @@ def read_command_line():
 
     return config
 
-if __name__ == "__main__":
-    import sys,datetime
+def main():
+    import sys
 
     comargs = read_command_line()
     config = get_config(comargs)
@@ -283,3 +283,6 @@ if __name__ == "__main__":
                 o.add_entries(entries)
             except:
                 sys.stderr.write("An error occurred in %s output\n" % o.__name__.split('.')[-1])
+
+if __name__ == "__main__":
+    main()
