@@ -8,5 +8,11 @@ setup(name='droplogger',
       author='Dan Jones',
       author_email='danjones@goodevilgenius.org',
       license='MIT',
-      packages=find_packages()
+      packages=find_packages(),
+      entry_points={
+          'console_scripts': [
+              'droplogger=droplogger.droplogger:main',
+              'drop-a-log=droplogger.drop_a_log:main'
+              ]
+      }
      )
