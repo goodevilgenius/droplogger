@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(name='droplogger',
       description='Logging application',
@@ -8,5 +8,5 @@ setup(name='droplogger',
       author='Dan Jones',
       author_email='danjones@goodevilgenius.org',
       license='MIT',
-      packages=['droplogger']
+      packages=find_packages()
      )
