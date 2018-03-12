@@ -91,7 +91,7 @@ def parse_drop_args(args):
 
 	return name, entry if (bool)(entry['title']) else False
 
-if __name__ == "__main__":
+def main():
 	import argparse, re, json
 
 	class AddItemAction(argparse.Action):
@@ -130,3 +130,6 @@ if __name__ == "__main__":
 			print("Failed to add entry")
 	else:
 		print("Failed to parse entry. Please check your input and try again.")
+
+if __name__ == "__main__":
+	main()

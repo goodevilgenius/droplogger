@@ -8,9 +8,9 @@ import datetime
 import re
 import json
 import sys
-from config import get_config
-from utils.misc import *
-from utils.date import *
+from .config import get_config
+from .utils.misc import *
+from .utils.date import *
 
 first_line_re = re.compile("^@begin\s+([^-]+(?:\s-[0-9]{4})?)\s+-\s*(.*)")
 
@@ -262,8 +262,8 @@ def read_command_line():
 
     return config
 
-if __name__ == "__main__":
-    import sys,datetime
+def main():
+    import sys
 
     comargs = read_command_line()
     config = get_config(comargs)
@@ -283,3 +283,6 @@ if __name__ == "__main__":
                 o.add_entries(entries)
             except:
                 sys.stderr.write("An error occurred in %s output\n" % o.__name__.split('.')[-1])
+
+if __name__ == "__main__":
+    main()
