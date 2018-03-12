@@ -6,8 +6,8 @@ import appdirs
 import json
 import os.path
 import importlib
-from utils.misc import merge_dicts
-from utils.date import parse_date
+from .utils.misc import merge_dicts
+from .utils.date import parse_date
 
 welcome = False
 
