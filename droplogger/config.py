@@ -73,18 +73,34 @@ def get_config(comargs={}):
 	
     return config
 
+def get_output_module(name):
+    module = None
+    path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'outputs', name + '.py')
+    if sys.version_info >= (3,0,0):
+        import importlib.machinery
+        try:
+            module = importlib.machinery.SourceFileLoader(name, path).load_module()
+        except FileNotFoundError:
+            pass
+    else:
+        import imp
+        try:
+            module = imp.load_source(name, path)
+        except IOError:
+            pass
+    return module
+
 def get_outputs(config):
     real_outputs = []
     orig_outputs = config['outputs']
     for o in config['outputs']:
-        try:
-            new_output = importlib.import_module("outputs.%s" % o)
-            if o in config['output_config']:
-                for k in config['output_config'][o]:
-                    new_output.config[k] = config['output_config'][o][k]
-            real_outputs.append(new_output)
-        except ImportError:
-            pass
+        new_output = get_output_module(o)
+        if new_output is None:
+            continue
+        if o in config['output_config']:
+            for k in config['output_config'][o]:
+                new_output.config[k] = config['output_config'][o][k]
+        real_outputs.append(new_output)
     config['outputs'] = real_outputs
     config['original_outputs'] = orig_outputs
 
