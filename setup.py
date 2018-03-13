@@ -23,5 +23,15 @@ setup(name='droplogger',
       project_urls={
             "Bug Tracker": "https://github.com/goodevilgenius/droplogger/issues",
             "Documentation": "https://github.com/goodevilgenius/droplogger/blob/master/README.md",
-            "Source Code": "https://github.com/goodevilgenius/droplogger", }
+            "Source Code": "https://github.com/goodevilgenius/droplogger"
+      },
+      install_requires=[
+            'python-dateutil',
+            'appdirs'
+      ],
+      extra_requires={
+            'mongo':['pymongo'],
+            'feeds':['jinja2', 'markdown'],
+            'markdown_journal':['jinja2']
+      }
      )
