@@ -14,5 +14,9 @@ setup(name='droplogger',
               'droplogger=droplogger.droplogger:main',
               'drop-a-log=droplogger.drop_a_log:main'
               ]
-      }
+      },
+      package_data={
+            'droplogger.outputs': ['templates/*.tpl']
+      },
+      include_package_data=True
      )
