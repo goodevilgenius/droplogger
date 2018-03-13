@@ -19,5 +19,9 @@ setup(name='droplogger',
       package_data={
             'droplogger.outputs': ['templates/*.tpl']
       },
-      include_package_data=True
+      include_package_data=True,
+      project_urls={
+            "Bug Tracker": "https://github.com/goodevilgenius/droplogger/issues",
+            "Documentation": "https://github.com/goodevilgenius/droplogger/blob/master/README.md",
+            "Source Code": "https://github.com/goodevilgenius/droplogger", }
      )
