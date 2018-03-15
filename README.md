@@ -1,6 +1,6 @@
 # DropLogger
 
-DropLogger is a program that takes logs of your activities, and creates journal
+DropLogger is the Dropbox (+IFTTT) logger. It is a program that takes logs of your activities, and creates journal
 files (and many other things) from those logs.
 
 It's designed to be used with IFTTT and Dropbox, but is flexible enough to be
@@ -12,21 +12,25 @@ All the log files reside in the same directory (by default
 ~/Dropbox/IFTTT/DropLogger) and have a very specific format. It's a plain text
 file, but each log entry is formatted like this:
 
-    @begin <entry-date-and-time> - <title>
-	@key value
-	@key2 this entry is long, and spans
-	multiple lines
-	@number 4
-	@bool True
-	@end
+```
+@begin <entry-date-and-time> - <title>
+@key value
+@key2 this entry is long, and spans
+multiple lines
+@number 4
+@bool True
+@end
+```
 
 Each text file is named for the particular log. For example, you might log all
 the places you've been in a file called places.txt, and an entry might look like
 this: 
 
-    @begin March 5, 2015 at 12:15PM - White House
-	@url http://4sq.com/316GgA
-	@end
+```
+@begin March 5, 2015 at 12:15PM - White House
+@url http://4sq.com/316GgA
+@end
+```
 
 You could also include other information, such as latitude and longitude, in
 each log. To generate this log, you could use the IFTTT Foursquare Recipe in the
@@ -36,8 +40,10 @@ The only parts of the log entry that are required are `@begin` at the beginning,
 `@end` at the end, and the date and the title. So, if you wanted to keep a log
 of short notes, you could create a file called notes.txt that looked like this:
 
-    @begin February 3, 2015 at 01:33PM - Remember to call Mom @end
-	@begin February 4, 2015 at 07:45AM - Breakfast today was great! @end
+```
+@begin February 3, 2015 at 01:33PM - Remember to call Mom @end
+@begin February 4, 2015 at 07:45AM - Breakfast today was great! @end
+```
 
 ## Output
 
@@ -58,7 +64,9 @@ a file and used however you see fit.
 
 Its config is simple:
 
-    {"json_output": false, "indent": true}
+```json
+{"json_output": false, "indent": true}
+```
 
 ### feed
 
@@ -69,7 +77,9 @@ purpose.
 This might be especially useful run regularly with specific command-line
 arguments. E.g., I like to do something like this:
 
-    droplogger -o feed -s min -e now -m 5 -w tracks -w watched
+```shell
+droplogger -o feed -s min -e now -m 5 -w tracks -w watched
+```
 
 That command generates feeds of the five latest entries for my tracks and
 watched logs. `-s min` guarantees that it will grab as far back as it needs to
