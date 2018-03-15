@@ -138,7 +138,26 @@ The final output is to send each entry to a mongo database.
 
 ## Config file
 
-**TODO**
+The configuration file will be found in a system-specific location. Here are a few places it might be:
+
+* On macOS: ~/Library/Preferences/DropLogger
+* On Windows XP: C:\Documents and Settings\<username>\Application Data\DanielRayJones\DropLogger
+* On Windows 7: C:\Users\<username>\AppData\Local\DanielRayJones\DropLogger
+* On RedHat-based Linuxes: ~/.local/share/DropLogger
+* On other Unix and Unix-like systems: ~/.config/DropLogger
+
+There will be an example config file there, called `config.example.json`. It should be renamed to `config.json` and modified according to your intended usage.
+
+When you first launch `droplogger`, you will see the following message:
+
+```
+No config file present. Using default values.
+Please move /path/to/config.example.json to /path/to/config.json, and set values as appropriate
+```
+
+In this way, you can discover the exact location of your config file.
+
+The file must be valid JSON. There are instructions within the file itself as to what values may be used.
 
 ## Command-line arguments
 
