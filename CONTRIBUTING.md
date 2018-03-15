@@ -21,3 +21,15 @@ Also, this project is under an [MIT License](LICENSE), so any code accepted in a
 ## Code of Conduct
 
 I have a [Code of Conduct](CODE_OF_CONDUCT.md) for this project. Any comments on any issues or pull requests (or commit messages) that violate that code of conduct will be ignored and deleted.
+
+## Current state
+
+The application is currently very usable, and stable. The command-line scripts, `droplogger` and `drop-a-log`, work as intended, and the `droplogger.drop_a_log` module works well to add new entries programatically from within another python application.
+
+However, both `droplogger.py` and `drop_a_log.py` are both very messy. Some more code reorganization is definitely needed.
+
+I'm currently tracking these sorts of issues through [Code Climate](https://codeclimate.com/github/goodevilgenius/droplogger/issues). I have also [added several GitHub issues](https://github.com/goodevilgenius/droplogger/issues?q=is%3Aissue+is%3Aopen+label%3Acode-climate) based on CodeClimate's analysis.
+
+If anyone would like to tackle some of these issues, they would be welcome to do so. It will require some code reorganization, however, so if you intend to try and clean up some of the code, please comment on an appropriate issue (or [open a new issue](https://github.com/goodevilgenius/droplogger/issues/new)) to discuss what type of reorganization you think would be beneficial. I'd hate for someone to put in a lot of effor to clean up some of my code, open up a PR, and I have to reject the entire thing because it's going in a completely different route than I intended.
+
+I intend to make no breaking changes to the command-line scripts between 1.0 and 2.0, however, there may be breaking changes to the API during that time.
