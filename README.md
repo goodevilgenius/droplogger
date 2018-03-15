@@ -197,6 +197,49 @@ in the config file. The following are supported:
 
 **More to come**
 
+## Adding entries from the command line
+
+`droplogger` comes with a command-line script called `drop-a-log` which can be used to add new entries (without having to go through IFTTT).
+
+It's usage is very simple, and invoking `drop-a-log --help` should tell you all you need to know, but here are a few examples of usage.
+
+`drop-a-log notes "I am so tired right now"` adds to the `notes` log:
+
+```
+@begin February 15, 2018 at 06:51:39PM +0000 - I am so tired right now @end
+```
+
+```shell
+drop-a-log tracks -d 1999-05-04T06:30 "(You Drive Me) Crazy by Britney Spears" \
+   -i url https://www.last.fm/music/Britney+Spears/_/(You+Drive+Me)+Crazy
+   -i artist "Britney Spears"
+   -i album "Britney Spears"
+   -i song "(You Drive Me) Crazy"
+```
+
+The format for the date after `-d` is very flexible. Try out a few things and see what works. This command adds the following to the `tracks` log.
+
+```
+@begin May 4, 1999 at 06:30:00PM +0000 - (You Drive Me) Crazy by Britney Spears
+@url https://www.last.fm/music/Britney+Spears/_/(You+Drive+Me)+Crazy
+@artist Britney Spears
+@album Britney Spears
+@song (You Drive Me) Crazy
+@end
+```
+
+`drop-a-log data "Arbitrary Data" -j '{"field1":"a string","field2":42,"field3":true}'` adds to the `data` log:
+
+```
+@begin February 15, 2018 at 06:51:39PM +0000 - Arbitrary Data
+@field1 a string
+@field2 42
+@field3 true
+@end
+```
+
+The `-j` option lets you send your entire entry as a JSON-encoded string.
+
 ## Using as a Python module
 
 The application includes an easy-to-use module for adding other droplog entries. The following example should get you started:
