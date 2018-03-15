@@ -184,7 +184,29 @@ in the config file. The following are supported:
 
 **More to come**
 
-## Future enhancements
+## Using as a Python module
 
-* Finish this documentation
-* Provide API documentation
+The application includes an easy-to-use module for adding other droplog entries. The following example should get you started:
+
+```python
+from droplogger.drop_a_log import add_entry
+from datetime import datetime
+
+entry = {"title": "A new entry"}
+entry['date'] = datetime.now()
+entry['rating'] = 5
+entry['like'] = True
+
+add_entry('logname', etnry)
+```
+
+This will add the following entry to `logname.txt`:
+
+```
+@begin February 15, 2018 at 06:51:39PM +0000 - A new entry
+@rating 5
+@like true
+@end
+```
+
+The `date` may be ommitted, in which case, the current time will be used. The `date` may also be a string which is parseable by `dateutil.parser`.
