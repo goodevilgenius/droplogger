@@ -33,3 +33,7 @@ I'm currently tracking these sorts of issues through [Code Climate](https://code
 If anyone would like to tackle some of these issues, they would be welcome to do so. It will require some code reorganization, however, so if you intend to try and clean up some of the code, please comment on an appropriate issue (or [open a new issue](https://github.com/goodevilgenius/droplogger/issues/new)) to discuss what type of reorganization you think would be beneficial. I'd hate for someone to put in a lot of effor to clean up some of my code, open up a PR, and I have to reject the entire thing because it's going in a completely different route than I intended.
 
 I intend to make no breaking changes to the command-line scripts between 1.0 and 2.0, however, there may be breaking changes to the API during that time.
+
+## My contributions
+
+Currently, at v1.0, I'm very satisfied with it's functionality. Therefore, I won't be contributing much for the present time. I have several other projects I'm going to be focusing on now. I will come back around to it at some point, however. But until then, I'll likely only be contributing by approving PRs by others.
