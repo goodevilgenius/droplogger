@@ -5,6 +5,7 @@
     - `.github_changelog_geneartor`
     - `setup.py`
     - each `__init__.py`
+        * `find droplogger/ -name __init__.py -exec c9 open {} \;`
 3. Run `github_changelog_geneartor`
 4. Change `CHANGELOG` so new version has `v` prefix
 5. (After committing) `git flow release finish`
