@@ -1,5 +1,20 @@
 # Change Log
 
+## [v1.0](https://github.com/goodevilgenius/droplogger/tree/v1.0) (2018-03-16)
+[Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v0.8.1...v1.0)
+
+**Implemented enhancements:**
+
+- Fill out CONTRIBUTING with more specifics [\#37](https://github.com/goodevilgenius/droplogger/issues/37)
+- Make DropLogger installable through `python setup.py install` [\#15](https://github.com/goodevilgenius/droplogger/issues/15)
+
+**Fixed bugs:**
+
+- Templates not included with installation [\#38](https://github.com/goodevilgenius/droplogger/issues/38)
+
+## [v0.8.1](https://github.com/goodevilgenius/droplogger/tree/v0.8.1) (2018-03-08)
+[Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v0.8...v0.8.1)
+
 ## [v0.8](https://github.com/goodevilgenius/droplogger/tree/v0.8) (2018-03-08)
 [Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v0.7.1...v0.8)
 
