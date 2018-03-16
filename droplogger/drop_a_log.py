@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+"""Module for adding new droplog entries"""
 
 import os, os.path, copy, json
 import datetime, dateutil.tz
@@ -7,6 +8,12 @@ from utils.misc import *
 from utils.date import *
 
 def add_entry(name, entry):
+	"""Add a new droplog entry to name log
+
+	entry should be a dict having at least a title, and a date
+	date should be either a datetime, or a string parseable by utils.date.parse_date
+	For all other items, if the value is neither a string or number, it must be passable to json.dumps
+	"""
 	e = copy.deepcopy(entry)
 	c = get_config()
 	path = c['path']
@@ -55,7 +62,7 @@ def add_entry(name, entry):
 		for k in e:
 			t = type(e[k])
 			fp.write('@' + k + ' ')
-			if t is str or t is unicode:
+			if is_string(e[k]):
 				fp.write(e[k])
 			elif t is int or t is long or t is float:
 				fp.write((str)(e[k]))
@@ -74,6 +81,7 @@ def add_entry(name, entry):
 	return True
 
 def parse_drop_args(args):
+	"""Helper for parsing command-line arguments, used by main"""
 	name = args.name
 	entry = {
 		"title": args.title, 
@@ -91,7 +99,8 @@ def parse_drop_args(args):
 
 	return name, entry if (bool)(entry['title']) else False
 
-if __name__ == "__main__":
+def main():
+	"""entry point for drop-a-log cli command"""
 	import argparse, re, json
 
 	class AddItemAction(argparse.Action):
@@ -130,3 +139,6 @@ if __name__ == "__main__":
 			print("Failed to add entry")
 	else:
 		print("Failed to parse entry. Please check your input and try again.")
+
+if __name__ == "__main__":
+	main()

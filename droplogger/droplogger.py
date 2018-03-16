@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+"""Main droplogger module.
+
+Most of this is currently too tied to the cli to be useful as a module.
+"""
 
 import os
 import os.path
@@ -8,13 +12,19 @@ import datetime
 import re
 import json
 import sys
-from config import get_config
-from utils.misc import *
-from utils.date import *
+from .config import get_config
+from .utils.misc import *
+from .utils.date import *
 
 first_line_re = re.compile("^@begin\s+([^-]+(?:\s-[0-9]{4})?)\s+-\s*(.*)")
 
 def get_files(**kwargs):
+    """Returns a list of files with extension kwargs['ext'] relative to kwargs['path']
+
+    If kwargs['recurse'] is True, get all files in subfolders as well
+    If kwargs['white'] is specified, only return files with a name found therein
+    If kwargs['black'] is specified, do not include files with a name found therein
+    """
     import copy
     
     r = []
@@ -46,6 +56,7 @@ def get_files(**kwargs):
     return r
 
 def parse_item(item):
+    """Parses a string and returns a value of an appropriate type"""
     yaml_bool = re.compile("^(y|Y|yes|Yes|YES|n|N|no|No|NO|true|True|TRUE|false|False|FALSE|on|On|ON|off|Off|OFF)$")
     yaml_true = re.compile("^(y|Y|yes|Yes|YES|true|True|TRUE|on|On|ON)$")
     yaml_null = re.compile("^(~|null|Null|NULL|none|None|NONE)")
@@ -97,6 +108,9 @@ def parse_item(item):
     return item
 
 def process_entry(entry, lists = None, list_separator = None):
+    """Parses a string representing a droplog entry, and returns a dict.
+
+    If string is not parseable, returns False"""
     new = {}
     if lists is None:
         lists = get_config()['lists']
@@ -180,6 +194,7 @@ def process_entry(entry, lists = None, list_separator = None):
     return new
 
 def read_files(**kwargs):
+    """Reads the files specified in kwargs['files'] and returns a list of entries as strings"""
     import codecs
     
     entries = {}
@@ -227,6 +242,7 @@ def read_files(**kwargs):
     return entries
 
 def read_command_line():
+    """Reads the command line arguments. Returned dict may be merged with config"""
     import argparse
 
     config = {"list_logs":False}
@@ -262,8 +278,9 @@ def read_command_line():
 
     return config
 
-if __name__ == "__main__":
-    import sys,datetime
+def main():
+    """You probably don't want to use this."""
+    import sys
 
     comargs = read_command_line()
     config = get_config(comargs)
@@ -283,3 +300,6 @@ if __name__ == "__main__":
                 o.add_entries(entries)
             except:
                 sys.stderr.write("An error occurred in %s output\n" % o.__name__.split('.')[-1])
+
+if __name__ == "__main__":
+    main()

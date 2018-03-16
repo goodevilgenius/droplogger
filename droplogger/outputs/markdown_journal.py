@@ -76,7 +76,7 @@ def add_entries(entries):
     c = copy.deepcopy(entries)
     entries_to_send = {}
 
-    date = c[c.keys()[0]][0]["date"]
+    date = c[list(c.keys())[0]][0]["date"]
 
     diary = get_diary(c, "diary")
     diary = diary + get_diary(c, "dreams", "Dreams", True)
@@ -86,7 +86,7 @@ def add_entries(entries):
 
     title = config["main_header"].format(date.strftime(config["long_date"]))
 
-    for key in c.keys():
+    for key in list(c.keys()):
         if not key in c: continue
         if key.count(os.sep) > 0:
             i = key.index(os.sep)

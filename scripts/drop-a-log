@@ -1,0 +1,12 @@
+#!/usr/bin/env python
+
+import os.path
+import sys
+
+root = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+
+sys.path.insert(0, root)
+
+from droplogger.drop_a_log import main
+
+main()
