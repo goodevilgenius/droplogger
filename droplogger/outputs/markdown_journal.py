@@ -32,7 +32,7 @@ def add_entries_helper(entries_to_send, entries, key):
             if "tags" in e: e["tags"] = map(unicode, e["tags"])
             for e_key in e.keys():
                 if e_key == "note" or e_key == "notes":
-                    val = re.sub('^  ', '', re.sub('^', '  ', e[e_key], 0, re.M))
+                    val = re.sub('^  ', '', re.sub('^', '    ', e[e_key], 0, re.M))
                     while re.search('\n  \n', val):
                         val = re.sub('\n  \n', '\n\n', val)
                     e[e_key] = val
