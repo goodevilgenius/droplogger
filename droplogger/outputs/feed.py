@@ -2,6 +2,7 @@
 
 import os, codecs, datetime
 from email.utils import formatdate
+from ..utils.misc import json_dumps
 
 __all__ = ["add_entries"]
 
@@ -27,12 +28,6 @@ def add_entries(entries):
 
     import jinja2, json, markdown
     from xml.sax.saxutils import escape
-
-    def serialize_json(obj):
-        return unicode(obj)
-
-    def json_dumps(obj):
-        return json.dumps(obj, default=serialize_json)
 
     entries_to_send = []
     for log in entries:

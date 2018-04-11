@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys
+import sys, json
 
 def is_string(item):
     if sys.version_info >= (3,0,0):
@@ -22,3 +22,9 @@ def merge_dicts(a, b):
             merge_dicts(a[k], v)
         else:
             a[k] = v
+
+def serialize_json(obj):
+    return get_string(obj)
+
+def json_dumps(obj):
+    return json.dumps(obj, default=serialize_json)
