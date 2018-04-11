@@ -1,7 +1,10 @@
 #!/usr/bin/python
 
 import os, codecs, datetime
+import jinja2, markdown
 from email.utils import formatdate
+from xml.sax.saxutils import escape
+from ..utils.misc import json_dumps
 
 __all__ = ["add_entries"]
 
@@ -24,15 +27,6 @@ def add_entries(entries):
     if not entries: return
     
     if not os.path.isdir(config["path"]): os.makedirs(config["path"])
-
-    import jinja2, json, markdown
-    from xml.sax.saxutils import escape
-
-    def serialize_json(obj):
-        return unicode(obj)
-
-    def json_dumps(obj):
-        return json.dumps(obj, default=serialize_json)
 
     entries_to_send = []
     for log in entries:

@@ -75,19 +75,12 @@ def get_config(comargs={}):
 
 def get_output_module(name):
     module = None
-    path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'outputs', name + '.py')
-    if sys.version_info >= (3,0,0):
-        import importlib.machinery
-        try:
-            module = importlib.machinery.SourceFileLoader(name, path).load_module()
-        except FileNotFoundError:
-            pass
-    else:
-        import imp
-        try:
-            module = imp.load_source(name, path)
-        except IOError:
-            pass
+    current = '.'.join(__name__.split('.')[0:-1])
+    name = '.outputs.' + name
+    try:
+        module = importlib.import_module(name, current)
+    except ImportError:
+        pass
     return module
 
 def get_outputs(config):
