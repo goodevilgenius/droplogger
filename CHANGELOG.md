@@ -1,16 +1,37 @@
 # Change Log
 
+## [v1.1](https://github.com/goodevilgenius/droplogger/tree/v1.1) (2018-04-12)
+[Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v1.0...v1.1)
+
+**Fixed bugs:**
+
+- Multiple paragraphs in `notes` breaks list in markdown\_journal [\#41](https://github.com/goodevilgenius/droplogger/issues/41)
+
 ## [v1.0](https://github.com/goodevilgenius/droplogger/tree/v1.0) (2018-03-16)
 [Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v0.8.1...v1.0)
 
 **Implemented enhancements:**
 
 - Fill out CONTRIBUTING with more specifics [\#37](https://github.com/goodevilgenius/droplogger/issues/37)
+- Add a "dreams" section to markdown journal [\#18](https://github.com/goodevilgenius/droplogger/issues/18)
 - Make DropLogger installable through `python setup.py install` [\#15](https://github.com/goodevilgenius/droplogger/issues/15)
+- Give good information when launching the first time [\#8](https://github.com/goodevilgenius/droplogger/issues/8)
+- Parse dates in drop\_a\_log [\#7](https://github.com/goodevilgenius/droplogger/issues/7)
+- Create command-line interface to add to droplog [\#1](https://github.com/goodevilgenius/droplogger/issues/1)
 
 **Fixed bugs:**
 
 - Templates not included with installation [\#38](https://github.com/goodevilgenius/droplogger/issues/38)
+- Output specified on the command-line ignored [\#17](https://github.com/goodevilgenius/droplogger/issues/17)
+- Multi-line notes break the dropdown journal [\#6](https://github.com/goodevilgenius/droplogger/issues/6)
+- droplogger fails to run if one of the outputs fail [\#4](https://github.com/goodevilgenius/droplogger/issues/4)
+- drop\_a\_log fails on Windows if the file doesn't end in a newline [\#3](https://github.com/goodevilgenius/droplogger/issues/3)
+- Entry items with a blank line cut off at the blank line [\#2](https://github.com/goodevilgenius/droplogger/issues/2)
+
+**Closed issues:**
+
+- Fix "Similar code" issue in droplogger.py [\#11](https://github.com/goodevilgenius/droplogger/issues/11)
+- Fix "Identical code" issue in drop\_a\_log.py [\#10](https://github.com/goodevilgenius/droplogger/issues/10)
 
 ## [v0.8.1](https://github.com/goodevilgenius/droplogger/tree/v0.8.1) (2018-03-08)
 [Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v0.8...v0.8.1)
@@ -18,17 +39,8 @@
 ## [v0.8](https://github.com/goodevilgenius/droplogger/tree/v0.8) (2018-03-08)
 [Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v0.7.1...v0.8)
 
-**Implemented enhancements:**
-
-- Add a "dreams" section to markdown journal [\#18](https://github.com/goodevilgenius/droplogger/issues/18)
-- Give good information when launching the first time [\#8](https://github.com/goodevilgenius/droplogger/issues/8)
-
 ## [v0.7.1](https://github.com/goodevilgenius/droplogger/tree/v0.7.1) (2018-03-02)
 [Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v0.7...v0.7.1)
-
-**Fixed bugs:**
-
-- Output specified on the command-line ignored [\#17](https://github.com/goodevilgenius/droplogger/issues/17)
 
 ## [v0.7](https://github.com/goodevilgenius/droplogger/tree/v0.7) (2018-03-01)
 [Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v0.6.1...v0.7)
@@ -36,26 +48,12 @@
 **Closed issues:**
 
 - Test ticket from Code Climate [\#14](https://github.com/goodevilgenius/droplogger/issues/14)
-- Fix "Identical code" issue in drop\_a\_log.py [\#10](https://github.com/goodevilgenius/droplogger/issues/10)
 
 ## [v0.6.1](https://github.com/goodevilgenius/droplogger/tree/v0.6.1) (2018-02-22)
 [Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v0.6...v0.6.1)
 
-**Closed issues:**
-
-- Fix "Similar code" issue in droplogger.py [\#11](https://github.com/goodevilgenius/droplogger/issues/11)
-
 ## [v0.6](https://github.com/goodevilgenius/droplogger/tree/v0.6) (2018-02-19)
 [Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v0.5.1...v0.6)
-
-**Implemented enhancements:**
-
-- Parse dates in drop\_a\_log [\#7](https://github.com/goodevilgenius/droplogger/issues/7)
-
-**Fixed bugs:**
-
-- Multi-line notes break the dropdown journal [\#6](https://github.com/goodevilgenius/droplogger/issues/6)
-- droplogger fails to run if one of the outputs fail [\#4](https://github.com/goodevilgenius/droplogger/issues/4)
 
 ## [v0.5.1](https://github.com/goodevilgenius/droplogger/tree/v0.5.1) (2017-01-10)
 [Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v0.5...v0.5.1)
@@ -67,19 +65,7 @@
 ## [v0.5](https://github.com/goodevilgenius/droplogger/tree/v0.5) (2016-08-10)
 [Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v0.2...v0.5)
 
-**Fixed bugs:**
-
-- drop\_a\_log fails on Windows if the file doesn't end in a newline [\#3](https://github.com/goodevilgenius/droplogger/issues/3)
-
 ## [v0.2](https://github.com/goodevilgenius/droplogger/tree/v0.2) (2014-03-30)
-**Implemented enhancements:**
-
-- Create command-line interface to add to droplog [\#1](https://github.com/goodevilgenius/droplogger/issues/1)
-
-**Fixed bugs:**
-
-- Entry items with a blank line cut off at the blank line [\#2](https://github.com/goodevilgenius/droplogger/issues/2)
-
 
 
 \* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*

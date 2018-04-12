@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
-import os, os.path, re
+import os, os.path, re, copy
+from ..utils.misc import json_dumps
 
 __all__ = ["add_entries"]
 
@@ -28,11 +29,12 @@ def add_entries_helper(entries_to_send, entries, key):
         entries_to_send[key.replace(os.sep,'.')]["entries"] = entries[key]
         del entries[key]
         for e in entries_to_send[key.replace(os.sep,'.')]["entries"]:
+            e["original"] = copy.deepcopy(e)
             e["title"] = space_re.sub(' ', e["title"])
             if "tags" in e: e["tags"] = map(unicode, e["tags"])
             for e_key in e.keys():
                 if e_key == "note" or e_key == "notes":
-                    val = re.sub('^  ', '', re.sub('^', '  ', e[e_key], 0, re.M))
+                    val = re.sub('^  ', '', re.sub('^', '    ', e[e_key], 0, re.M))
                     while re.search('\n  \n', val):
                         val = re.sub('\n  \n', '\n\n', val)
                     e[e_key] = val
@@ -96,6 +98,7 @@ def add_entries(entries):
 
     templates_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates')
     env = jinja2.Environment(loader=jinja2.FileSystemLoader(templates_path))
+    env.filters['to_json'] = json_dumps
     temp = env.get_template("markdown.tpl")
     out = temp.render(title=title, diary=diary, config=config, entries=entries_to_send)
 

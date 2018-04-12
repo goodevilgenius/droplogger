@@ -14,13 +14,17 @@
 {%- if "boring" in e and e["boring"] %} &#x1F4A4;{% endif -%}
 {%- if "meh" in e and e["meh"] %} &#x1F644;{% endif -%}
 {%- if "rating" in e %} {{ "&#x2B50;"*e.rating }}{% endif -%}
-{%- if "notes" in e %}   
-  Notes: {{ e.notes -}}
-{% elif "note" in e %}   
-  Notes: {{ e.note -}}
+{%- if "data" in config and config["data"] %}<span data-origial='{{ e["original"] | to_json }}'></span>{% endif -%}
+{%- if "notes" in e %}
+
+    *Notes*: {{ e.notes -}}
+{% elif "note" in e %}
+
+    *Notes*: {{ e.note -}}
 {%- endif %}
-{%- if "tags" in e %}   
-  Tags: {{ ", ".join(e.tags) -}}
+{%- if "tags" in e %}
+
+    *Tags*: {{ ", ".join(e.tags) -}}
 {%- endif %}
 {% endfor %}
 {%- endif %}
