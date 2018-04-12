@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 setup(name='droplogger',
       description='Logging application',
       url='https://github.com/goodevilgenius/droplogger',
-      version='1.0',
+      version='1.1',
       author='Dan Jones',
       author_email='danjones@goodevilgenius.org',
       license='MIT',
