@@ -14,7 +14,8 @@
 {%- if "boring" in e and e["boring"] %} &#x1F4A4;{% endif -%}
 {%- if "meh" in e and e["meh"] %} &#x1F644;{% endif -%}
 {%- if "rating" in e %} {{ "&#x2B50;"*e.rating }}{% endif -%}
-{%- if "data" in config and config["data"] %}<span data-origial='{{ e["original"] | to_json }}'></span>{% endif -%}
+{%- if "data" in config and config["data"] %}
+    <span data-origial="{{ e["original"] | to_json | html_escape }}"></span>{% endif -%}
 {%- if "notes" in e %}
 
     *Notes*: {{ e.notes -}}
