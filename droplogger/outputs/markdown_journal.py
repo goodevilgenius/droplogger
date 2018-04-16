@@ -3,6 +3,11 @@
 import os, os.path, re, copy
 from ..utils.misc import json_dumps
 
+try:
+    from html import escape
+except ImportError:
+    from cgi import escape
+
 __all__ = ["add_entries"]
 
 config = {"__Instructions__":"In filename and main_header, {} is replaced with the log title",
@@ -12,6 +17,9 @@ config = {"__Instructions__":"In filename and main_header, {} is replaced with t
           "date_time":"%c"}
 
 space_re = re.compile('\s+')
+
+def html_escape(input):
+    return escape(input, True)
 
 def add_entries_helper(entries_to_send, entries, key):
     if not entries: return
@@ -99,6 +107,7 @@ def add_entries(entries):
     templates_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates')
     env = jinja2.Environment(loader=jinja2.FileSystemLoader(templates_path))
     env.filters['to_json'] = json_dumps
+    env.filters['html_escape'] = html_escape
     temp = env.get_template("markdown.tpl")
     out = temp.render(title=title, diary=diary, config=config, entries=entries_to_send)
 
