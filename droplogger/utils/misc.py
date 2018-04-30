@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys, json
+import datetime
 
 def is_string(item):
     if sys.version_info >= (3,0,0):
@@ -24,6 +25,9 @@ def merge_dicts(a, b):
             a[k] = v
 
 def serialize_json(obj):
+    import droplogger.utils.date as date
+    if (isinstance(obj, datetime.datetime)):
+        return date.format_for_json(obj)
     return get_string(obj)
 
 def json_dumps(obj):
