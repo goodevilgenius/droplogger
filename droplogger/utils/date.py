@@ -35,3 +35,8 @@ def format_date(dt):
         d = d2.strftime('%B %d, %Y at %I:%M:%S%p %z').replace('1900', '%04d' % dt.year)
     else: d = dt.strftime('%B %d, %Y at %I:%M:%S%p %z')
     return d
+
+def format_for_json(dt):
+    if (not isinstance(dt, datetime.datetime)):
+        dt = parse_date(dt)
+    return dt.strftime('%Y-%m-%dT%H:%M:%S.%f%z')
