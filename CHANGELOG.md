@@ -1,17 +1,17 @@
 # Change Log
 
+## [v1.2.0](https://github.com/goodevilgenius/droplogger/tree/v1.2.0) (2018-05-01)
+[Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v1.1.1...v1.2.0)
+
 ## [v1.1.1](https://github.com/goodevilgenius/droplogger/tree/v1.1.1) (2018-04-16)
 [Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v1.1...v1.1.1)
-
-**Fixed bugs:**
-
-- span on markdown journal is not parsed correctly when a single quote is present [\#42](https://github.com/goodevilgenius/droplogger/issues/42)
 
 ## [v1.1](https://github.com/goodevilgenius/droplogger/tree/v1.1) (2018-04-12)
 [Full Changelog](https://github.com/goodevilgenius/droplogger/compare/v1.0...v1.1)
 
 **Fixed bugs:**
 
+- span on markdown journal is not parsed correctly when a single quote is present [\#42](https://github.com/goodevilgenius/droplogger/issues/42)
 - Multiple paragraphs in `notes` breaks list in markdown\_journal [\#41](https://github.com/goodevilgenius/droplogger/issues/41)
 
 ## [v1.0](https://github.com/goodevilgenius/droplogger/tree/v1.0) (2018-03-16)
