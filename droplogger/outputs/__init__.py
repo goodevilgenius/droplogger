@@ -12,4 +12,4 @@ This module contains available outputs for the application.
 
 __author__ = "Dan Jones <danjones@goodevilgenius.org>"
 __license__ = "MIT"
-__version__ = '1.1.1'
+__version__ = '1.2.0'
