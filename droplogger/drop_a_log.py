@@ -3,9 +3,9 @@
 
 import os, os.path, copy, json
 import datetime, dateutil.tz
-from config import get_config
-from utils.misc import *
-from utils.date import *
+from .config import get_config
+from .utils.misc import *
+from .utils.date import *
 
 def add_entry(name, entry):
 	"""Add a new droplog entry to name log
