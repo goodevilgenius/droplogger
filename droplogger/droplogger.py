@@ -223,7 +223,9 @@ def read_files(**kwargs):
                     if date.tzinfo is None:
                         date = date.replace(tzinfo = dateutil.tz.tzlocal())
                     if date and kwargs['start'] <= date < kwargs['end']:
-                        these_entries.append(process_entry(entry))
+                        newEnt = process_entry(entry)
+                        if (newEnt != False):
+                            these_entries.append(newEnt)
                 match = reg.search(text, match.end())
 
         if len(these_entries) == 0: continue
