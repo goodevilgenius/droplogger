@@ -156,6 +156,7 @@ def process_entry(entry, lists = None, list_separator = None):
             newline = lines.pop(0)
         except IndexError:
             newline = False
+    todelete = []
     for k in new.keys():
         if k in lists:
             ar = []
@@ -182,11 +183,11 @@ def process_entry(entry, lists = None, list_separator = None):
                     continue
                 except ValueError:
                     pass
-            newk = parse_item(new[k])
-            if newk is not None:
-                new[k] = newk
-            else:
-                del new[k]
+            new[k] = parse_item(new[k])
+            if new[k] is None:
+                todelete.append(k)
+    for k in todelete:
+        del new[k]
     if not "title" in new or new["title"] is None:
         new["title"] = "Untitled"
     if not is_string(new["title"]):
