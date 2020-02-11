@@ -64,9 +64,9 @@ def add_entry(name, entry):
 			fp.write('@' + k + ' ')
 			if is_string(e[k]):
 				fp.write(e[k])
-			elif t is int or t is long or t is float:
+			elif type(t) is int or type(t) is float:
 				fp.write((str)(e[k]))
-			elif t is list and k in lists:
+			elif type(t) is list and k in lists:
 				fp.write(list_separator.join(str(x) for x in e[k]))
 			else:
 				fp.write(json.dumps(e[k]))
