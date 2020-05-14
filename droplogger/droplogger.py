@@ -16,7 +16,8 @@ from .config import get_config
 from .utils.misc import *
 from .utils.date import *
 
-first_line_re = re.compile("^@begin\s+([^-]+(?:\s-[0-9]{4})?)\s+-\s*(.*)")
+iso8601 = "(?:-?(?:[1-9][0-9]*)?[0-9]{4})-(?:1[0-2]|0[1-9])-(?:3[01]|0[1-9]|[12][0-9])T(?:2[0-3]|[01][0-9]):(?:[0-5][0-9]):(?:[0-5][0-9])(?:\.[0-9]+)?(?:Z|[+-][01][0-9]:[0-9][0-9])?"
+first_line_re = re.compile("^@begin\s+([^-]+(?:\s-[0-9]{4})?|" + iso8601 + ")\s+-\s*(.*)")
 
 def get_files(**kwargs):
     """Returns a list of files with extension kwargs['ext'] relative to kwargs['path']
