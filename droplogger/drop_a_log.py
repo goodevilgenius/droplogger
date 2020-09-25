@@ -134,7 +134,7 @@ def main():
 			del(entry["date"])
 
 			for (k,v) in entry.items():
-				print("%s: %s" % (k, v if type(v) is str or type(v) is unicode else json.dumps(v)))
+				print("%s: %s" % (k, v if is_string(v) else json.dumps(v)))
 		else:
 			print("Failed to add entry")
 	else:
