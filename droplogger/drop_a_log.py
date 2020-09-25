@@ -36,12 +36,13 @@ def add_entry(name, entry):
 		return False
 
 	try:
-		fp.seek(-1, os.SEEK_END)
+		fp.seek(0, os.SEEK_END)
+		fp.seek(fp.tell() - 1, os.SEEK_SET)
 		last = fp.read()
 	except IOError:
 		last = '\n'
 	if last != '\n':
-		fp.seek(-1, os.SEEK_END)
+		fp.seek(0, os.SEEK_END)
 		fp.write("\n")
 
 	fp.seek(0,2)
