@@ -37,7 +37,8 @@ def add_entry(name, entry):
 
 	try:
 		fp.seek(0, os.SEEK_END)
-		fp.seek(fp.tell() - 1, os.SEEK_SET)
+		pos = fp.tell() - 1
+		fp.seek(pos if pos > 0 else 0, os.SEEK_SET)
 		last = fp.read()
 	except IOError:
 		last = '\n'
