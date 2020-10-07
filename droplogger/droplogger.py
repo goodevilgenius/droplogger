@@ -160,21 +160,25 @@ def process_entry(entry, lists = None, list_separator = None):
     todelete = []
     for k in new.keys():
         if k in lists:
-            ar = []
-            for i in new[k].split(list_separator):
-                newi = parse_item(i)
-                if newi is not None:
-                    ar.append(newi)
-            if len(ar) > 0:
-                new[k] = ar
-            else: del new[k]
+            # First we'll check to see if it's already a list
+            ar = parse_item(new[k])
+            if not isinstance(ar, list):
+                ar = []
+                for i in new[k].split(list_separator):
+                    newi = parse_item(i)
+                    if newi is not None:
+                        ar.append(newi)
+                if len(ar) > 0:
+                    new[k] = ar
+                else: del new[k]
+            else: new[k] = ar
         else:
             if k == "json":
                 try:
                     newitems = json.loads(new[k])
                     if "date" in newitems: del newitems["date"]
                     if "title" in newitems: del newitems["title"]
-                    
+
                     for jsonk in newitems.keys():
                         newk = parse_item(newitems[jsonk])
                         if newk is not None:
