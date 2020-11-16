@@ -6,6 +6,7 @@ Most of this is currently too tied to the cli to be useful as a module.
 
 import os
 import os.path
+import copy
 import dateutil
 import dateutil.parser as dp
 import datetime
@@ -26,8 +27,6 @@ def get_files(**kwargs):
     If kwargs['white'] is specified, only return files with a name found therein
     If kwargs['black'] is specified, do not include files with a name found therein
     """
-    import copy
-    
     r = []
     wext = ("." + kwargs['ext']) if (bool)(kwargs['ext']) else ""
     xlen = len(wext)
@@ -122,7 +121,7 @@ def process_entry(entry, lists = None, list_separator = None):
         if list_separator is None:
             list_separator = ","
     other_lines_re = re.compile("^@([^\s]+)\s*(.*)")
-    
+
     lines = entry.splitlines()
     m = first_line_re.match(lines.pop(0))
     if not m: return False
@@ -158,7 +157,7 @@ def process_entry(entry, lists = None, list_separator = None):
         except IndexError:
             newline = False
     todelete = []
-    for k in new.keys():
+    for k in copy.copy(new).keys():
         if k in lists:
             # First we'll check to see if it's already a list
             ar = parse_item(new[k])
@@ -202,7 +201,7 @@ def process_entry(entry, lists = None, list_separator = None):
 def read_files(**kwargs):
     """Reads the files specified in kwargs['files'] and returns a list of entries as strings"""
     import codecs
-    
+
     entries = {}
     reg = re.compile('^@begin .*?@end\s*$', re.M | re.S)
     for f in kwargs['files']:
