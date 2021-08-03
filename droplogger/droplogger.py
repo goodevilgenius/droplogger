@@ -13,7 +13,7 @@ import datetime
 import re
 import json
 import sys
-from .config import get_config
+from .config import get_config, get_config_path
 from .utils.misc import *
 from .utils.date import *
 
@@ -252,7 +252,7 @@ def read_command_line():
     """Reads the command line arguments. Returned dict may be merged with config"""
     import argparse
 
-    config = {"list_logs":False}
+    config = {"list_logs": False, "get_config_path": False}
     p = argparse.ArgumentParser()
     p.add_argument('--list', '-l', action='store_true', help='Only list the logs')
     p.add_argument('--start', '-s', type=parse_date, help='Start date to parse, use current if omitted')
@@ -262,9 +262,11 @@ def read_command_line():
     p.add_argument('--output_config', '-c', nargs=3, dest='configs', action='append', metavar=('ouptut', 'config','value'), help='Set [output] [config] value as [key]')
     p.add_argument('--white', '-w', action='append', help='Whitelist: only show these logs (use -w multiple times for multiple logs)')
     p.add_argument('--black', '-b', action='append', help="Blacklist: don't show these logs (use -b multiple times for multiple logs) Ignored if any whitelist items are set")
+    p.add_argument('--get_config_path', action='store_true', help='Return the path to the config file and exit')
     parsed = p.parse_args()
 
     config["list_logs"] = parsed.list
+    config["get_config_path"] = parsed.get_config_path
     if parsed.start is not None: config["start"] = parsed.start
     if parsed.end is not None: config["end"] = parsed.end
     if parsed.max is not None: config["max"] = parsed.max
@@ -290,6 +292,10 @@ def main():
     import sys
 
     comargs = read_command_line()
+    if comargs["get_config_path"]:
+        print(get_config_path())
+        return
+
     config = get_config(comargs)
 
     if not config['list_logs']:
