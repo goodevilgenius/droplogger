@@ -10,4 +10,4 @@ The droplogger.droplogger module is currently too tied to the command-line to be
 
 __author__ = "Dan Jones <danjones@goodevilgenius.org>"
 __license__ = "MIT"
-__version__ = '1.2.6'
+__version__ = '1.3.0'
