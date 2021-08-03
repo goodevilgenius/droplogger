@@ -301,12 +301,13 @@ def main():
     if config['list_logs']:
         for k in entries.keys():
             print(k)
-    else:
-        for o in config['outputs']:
-            try:
-                o.add_entries(entries)
-            except:
-                sys.stderr.write("An error occurred in %s output\n" % o.__name__.split('.')[-1])
+        return
+
+    for o in config['outputs']:
+        try:
+            o.add_entries(entries)
+        except:
+            sys.stderr.write("An error occurred in %s output\n" % o.__name__.split('.')[-1])
 
 if __name__ == "__main__":
     main()
