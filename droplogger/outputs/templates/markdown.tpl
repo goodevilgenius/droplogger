@@ -15,7 +15,7 @@
 {%- if "meh" in e and e["meh"] %} &#x1F644;{% endif -%}
 {%- if "rating" in e %} {{ "&#x2B50;"*e.rating }}{% endif -%}
 {%- if "data" in config and config["data"] %}
-    <span data-origial="{{ e["original"] | to_json | html_escape }}"></span>{% endif -%}
+    <span data-original="{{ e["original"] | to_json | html_escape }}"></span>{% endif -%}
 {%- if "notes" in e %}
 
     *Notes*: {{ e.notes -}}
